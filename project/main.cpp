@@ -19,6 +19,7 @@ void pcardselect(float [],float[]);
 void bcardselect(float [],float[]);
 void loadText(Font &font);
 std::string IntToString(int);
+void cardUse();
 
 int main()
 {
@@ -42,17 +43,8 @@ int main()
     for (int i = 0; i < 5; i++)
     {
         Positionxpcard[i]=180*i;
-    }
-    for (int i = 0; i < 5; i++)
-    {
         Positionypcard[i]=window.getSize().y-250.f;
-    }
-    for (int i = 0; i < 5; i++)
-    {
         Positionxbcard[i]=window.getSize().x-180-(180*i);
-    }
-    for (int i = 0; i < 5; i++)
-    {
         Positionybcard[i]=0;
     }
     
@@ -79,21 +71,11 @@ int main()
                 for (int i = 0; i < 5; i++)
                     {
                         Positionxpcard[i]=180*i;
-                    }
-                for (int i = 0; i < 5; i++)
-                    {
                         Positionypcard[i]=window.getSize().y-250.f;
-                    }
-                playerHand[pselectcard]=0;
-                for (int i = 0; i < 5; i++)
-                    {
                         Positionxbcard[i]=window.getSize().x-180-(180*i);
-                    }
-                for (int i = 0; i < 5; i++)
-                    {
                         Positionybcard[i]=0;
                     }
-    
+                playerHand[pselectcard]=0;
                 BotHand[bselectcard]=0;
                 drawCard();
             }
@@ -278,4 +260,8 @@ std::string IntToString(int x){
 	temp << x;
 	str = temp.str();
     return str;
+}
+
+void cardUse(){
+
 }
