@@ -5,20 +5,23 @@ using namespace sf;
 //global variable
 int playerHand[5]={0,0,0,0,0};
 int BotHand[5]={0,0,0,0,0};
-int playerHP=80,botHP=80,pselectcard,botDEF=0,botAtk=0,playerATK=0,playerDEF=0;
+int playerHP=80,botHP=80,pselectcard,bselectcard,botDEF=0,botAtk=0,playerATK=0,playerDEF=0;
+int keytime = 10;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk;
 RenderWindow window(VideoMode(1200, 800), "Project!");
+float Positionxpcard[5]={},Positionypcard[5]={};
+float Positionxbcard[5]={},Positionybcard[5]={};
 
 
 void drawCard();
 std::string loadCard(int);
-void cardselect(float [],float[]);
+void pcardselect(float [],float[]);
+void bcardselect(float [],float[]);
 void loadText(Font &font);
 std::string IntToString(int);
 
 int main()
 {
-    int keytime = 10;
     Font font;
 
     //background 
@@ -36,7 +39,6 @@ int main()
     int winner =0;
     srand(time(NULL));
     window.setFramerateLimit(60);
-    float Positionxpcard[5]={},Positionypcard[5]={};
     for (int i = 0; i < 5; i++)
     {
         Positionxpcard[i]=180*i;
@@ -44,6 +46,14 @@ int main()
     for (int i = 0; i < 5; i++)
     {
         Positionypcard[i]=window.getSize().y-250.f;
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        Positionxbcard[i]=window.getSize().x-180-(180*i);
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        Positionybcard[i]=0;
     }
     
     while (window.isOpen()&&winner==0)
@@ -60,9 +70,10 @@ int main()
         {
             if(event.type == Event::Closed)
                 window.close();
+        
 
             //turn end simalation
-            cardselect(Positionxpcard,Positionypcard);
+            pcardselect(Positionxpcard,Positionypcard);
             if(Keyboard::isKeyPressed(Keyboard::A) && keytime>=10){
                 keytime = 0;
                 for (int i = 0; i < 5; i++)
@@ -74,6 +85,16 @@ int main()
                         Positionypcard[i]=window.getSize().y-250.f;
                     }
                 playerHand[pselectcard]=0;
+                for (int i = 0; i < 5; i++)
+                    {
+                        Positionxbcard[i]=window.getSize().x-180-(180*i);
+                    }
+                for (int i = 0; i < 5; i++)
+                    {
+                        Positionybcard[i]=0;
+                    }
+    
+                BotHand[bselectcard]=0;
                 drawCard();
             }
 
@@ -96,7 +117,6 @@ int main()
             }
         }
         
-        
         //Current Hand//
         drawCard();
         for(int i=0;i<5;i++){
@@ -110,7 +130,7 @@ int main()
             CurrentBotHand[i].loadFromFile("cardImage/back.png");
             BotCard[i].setScale(0.5f,0.5f);
             BotCard[i].setTexture(CurrentBotHand[i]);
-            BotCard[i].setPosition(Vector2f(window.getSize().x-180-(180*i),0));
+            BotCard[i].setPosition(Positionxbcard[i],Positionybcard[i]);
         }
 
         //call text
@@ -142,7 +162,6 @@ int main()
     }
     return 0;
 }
-
 void drawCard(){
     for(int i=0;i<5;i++)if(playerHand[i]==0)playerHand[i]=rand()%100+1;
     for(int i=0;i<5;i++)if(BotHand[i]==0)BotHand[i]=rand()%100+1;
@@ -176,17 +195,28 @@ std::string loadCard(int card){
 	else if(card==99||card==100)return "cardImage/25.png";
     else return(NULL);
 }
-void cardselect(float Positionxpcard[],float Positionypcard[]){
-    if(Mouse::isButtonPressed(Mouse::Left)){
+void pcardselect(float Positionxpcard[],float Positionypcard[]){
+    if(Mouse::isButtonPressed(Mouse::Left) && keytime >=10){
+        keytime = 0;
         for (int i = 0; i < 5; i++){
             if(Mouse::getPosition(window).x>=180*i &&Mouse::getPosition(window).x<=180*(i+1) &&Mouse::getPosition(window).y>=550.f){
                 Positionxpcard[i]=300;  
                 Positionypcard[i]=300;
-                pselectcard=i;        
+                pselectcard=i;
+                bcardselect(Positionxbcard,Positionybcard);        
             }
         }
     }
 }
+
+void bcardselect(float Positionxbcard[],float Positionybcard[]){
+    int i;
+    i=rand()%5;
+                Positionxbcard[i]=600;  
+                Positionybcard[i]=300;
+                bselectcard=i;        
+}       
+
 
 void loadText(Font &font){
     std::string hp,atk,def;
