@@ -12,17 +12,27 @@ RenderWindow window(VideoMode(1200, 800), "Project!");
 void drawCard();
 std::string loadCard(int);
 void cardselect(float [],float[]);
+void loadText(Font &font,Text &CurrentPlayerHP,Text &CurrentBotHp);
+std::string IntToString(int);
 
 int main()
 {
+    int keytime = 10;
+    Font font;
+    Text CurrentPlayerHP,CurrentBotHp;
+
+    //background 
     Texture backgroundImage;
     Sprite bg;
     backgroundImage.loadFromFile("cardImage/bg.jpg");
     bg.setTexture(backgroundImage);
     bg.setScale(1.7f,1.85f);
 
+    //card Sprites
     Texture CurrentPlayerHand[5];
     Sprite playerCard[5];
+    Texture CurrentBotHand[5];
+    Sprite BotCard[5];
     int winner =0;
     srand(time(NULL));
     window.setFramerateLimit(60);
@@ -37,18 +47,24 @@ int main()
     }
     
     while (window.isOpen()&&winner==0)
-    {
+    {   
+        if(keytime<10)keytime++;
         //screen unwider
         Vector2u screen = Vector2u(1200,800);
         if(window.getSize().x>1200||window.getSize().x<1200)window.setSize(screen);
         if(window.getSize().y>800||window.getSize().y<800)window.setSize(screen);
+
+        //event detecting
         Event event;
         while (window.pollEvent(event))
         {
             if(event.type == Event::Closed)
                 window.close();
+
+            //turn end simalation
             cardselect(Positionxpcard,Positionypcard);
-            if(Keyboard::isKeyPressed(Keyboard::A)){
+            if(Keyboard::isKeyPressed(Keyboard::A) && keytime>=10){
+                keytime = 0;
                 for (int i = 0; i < 5; i++)
                     {
                         Positionxpcard[i]=180*i;
@@ -60,7 +76,14 @@ int main()
                 playerHand[pselectcard]=0;
                 drawCard();
             }
+
+            //damaging simulation
+            if(Keyboard::isKeyPressed(Keyboard::S) && keytime>=10){
+                keytime = 0;
+                playerHP -=1;
+            }
         }
+        
         
         //show Current Hand//
         drawCard();
@@ -70,27 +93,26 @@ int main()
             playerCard[i].setTexture(CurrentPlayerHand[i]);
             playerCard[i].setPosition(Positionxpcard[i],Positionypcard[i]);
         }
-        Texture CurrentBotHand[5];
-        Sprite BotCard[5];
+
         for(int i=0;i<5;i++){
             CurrentBotHand[i].loadFromFile("cardImage/back.png");
             BotCard[i].setScale(0.5f,0.5f);
             BotCard[i].setTexture(CurrentBotHand[i]);
             BotCard[i].setPosition(Vector2f(window.getSize().x-180-(180*i),0));
         }
-        if(event.type == Event::KeyPressed){
-            if(Keyboard::isKeyPressed(Keyboard::A)){
-                playerHand[0] = 0;
-            }
-        }
+
+        //call text
+        loadText(font,CurrentPlayerHP,CurrentBotHp);
 
         //draw//
         window.clear(Color::White);
+        
         window.draw(bg);
         for(int i=0;i<5;i++){
             window.draw(playerCard[i]);
             window.draw(BotCard[i]);
         }
+        window.draw(CurrentPlayerHP);
         window.display();
 
     }
@@ -140,4 +162,25 @@ void cardselect(float Positionxpcard[],float Positionypcard[]){
             }
         }
     }
+}
+
+void loadText(Font &font,Text &CurrentPlayerHP,Text &CurrentBotHp){
+    std::string hp;
+    font.loadFromFile("font/Bold.otf");
+
+        //player hp//
+    CurrentPlayerHP.setCharacterSize(25);
+    CurrentPlayerHP.setColor(Color::Black);
+    CurrentPlayerHP.setFont(font);
+    CurrentPlayerHP.setPosition(1000,600);
+    hp = "HP : " + IntToString(playerHP);
+    CurrentPlayerHP.setString(hp);
+}
+
+std::string IntToString(int x){
+    std::string str;
+    std::ostringstream temp;  
+	temp << x;
+	str = temp.str();
+    return str;
 }
