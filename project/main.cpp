@@ -5,21 +5,21 @@ using namespace sf;
 //global variable
 int playerHand[5]={0,0,0,0,0};
 int BotHand[5]={0,0,0,0,0};
-int playerHP=80,botHP=80,pselectcard;
+int playerHP=80,botHP=80,pselectcard,botDEF=0,botAtk=0,playerATK=0,playerDEF=0;
+Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk;
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
 
 void drawCard();
 std::string loadCard(int);
 void cardselect(float [],float[]);
-void loadText(Font &font,Text &CurrentPlayerHP,Text &CurrentBotHp);
+void loadText(Font &font);
 std::string IntToString(int);
 
 int main()
 {
     int keytime = 10;
     Font font;
-    Text CurrentPlayerHP,CurrentBotHp;
 
     //background 
     Texture backgroundImage;
@@ -77,15 +77,27 @@ int main()
                 drawCard();
             }
 
-            //damaging simulation
+            //status simulation
             if(Keyboard::isKeyPressed(Keyboard::S) && keytime>=10){
                 keytime = 0;
                 playerHP -=1;
             }
+            if(Keyboard::isKeyPressed(Keyboard::D) && keytime>=10){
+                keytime = 0;
+                botHP -=1;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::F) && keytime>=10){
+                keytime = 0;
+                playerATK +=1;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::G) && keytime>=10){
+                keytime = 0;
+                botAtk +=1;
+            }
         }
         
         
-        //show Current Hand//
+        //Current Hand//
         drawCard();
         for(int i=0;i<5;i++){
             CurrentPlayerHand[i].loadFromFile(loadCard(playerHand[i]));
@@ -102,17 +114,29 @@ int main()
         }
 
         //call text
-        loadText(font,CurrentPlayerHP,CurrentBotHp);
+        loadText(font);
 
-        //draw//
-        window.clear(Color::White);
-        
+              
+        //draw background
+        window.clear(Color::White);  
         window.draw(bg);
+
+        //show card on screen
         for(int i=0;i<5;i++){
             window.draw(playerCard[i]);
             window.draw(BotCard[i]);
         }
-        window.draw(CurrentPlayerHP);
+
+        //show player status
+        window.draw(CurrentPlayerHP);//write current Hp.
+        window.draw(Patk);//write current atk
+        window.draw(Pdef);//write current def
+
+        //show bot status
+        window.draw(CurrentBotHP);//write current Hp.
+        window.draw(Batk);//write current atk
+        window.draw(Bdef);//write current def
+
         window.display();
 
     }
@@ -164,17 +188,58 @@ void cardselect(float Positionxpcard[],float Positionypcard[]){
     }
 }
 
-void loadText(Font &font,Text &CurrentPlayerHP,Text &CurrentBotHp){
-    std::string hp;
+void loadText(Font &font){
+    std::string hp,atk,def;
     font.loadFromFile("font/Bold.otf");
 
         //player hp//
     CurrentPlayerHP.setCharacterSize(25);
-    CurrentPlayerHP.setColor(Color::Black);
+    CurrentPlayerHP.setFillColor(Color::Black);
     CurrentPlayerHP.setFont(font);
     CurrentPlayerHP.setPosition(1000,600);
     hp = "HP : " + IntToString(playerHP);
     CurrentPlayerHP.setString(hp);
+
+        //player atk//
+    Patk.setCharacterSize(25);
+    Patk.setFillColor(Color::Black);
+    Patk.setFont(font);
+    Patk.setPosition(1000,650);
+    atk = "ATK : " + IntToString(playerATK);
+    Patk.setString(atk);
+        
+        //player def//
+    Pdef.setCharacterSize(25);
+    Pdef.setFillColor(Color::Black);
+    Pdef.setFont(font);
+    Pdef.setPosition(1000,700);
+    def = "DEF : " + IntToString(playerDEF);
+    Pdef.setString(def);
+
+        //Bot hp//
+    CurrentBotHP.setCharacterSize(25);
+    CurrentBotHP.setFillColor(Color::Black);
+    CurrentBotHP.setFont(font);
+    CurrentBotHP.setPosition(80,50);
+    hp = "HP : " + IntToString(botHP);
+    CurrentBotHP.setString(hp);
+
+        //bot atk//
+    Batk.setCharacterSize(25);
+    Batk.setFillColor(Color::Black);
+    Batk.setFont(font);
+    Batk.setPosition(80,100);
+    atk = "ATK : " + IntToString(botAtk);
+    Batk.setString(atk);
+
+        //bot def//
+    Bdef.setCharacterSize(25);
+    Bdef.setFillColor(Color::Black);
+    Bdef.setFont(font);
+    Bdef.setPosition(80,150);
+    def = "DEF : " + IntToString(botDEF);
+    Bdef.setString(def);
+
 }
 
 std::string IntToString(int x){
