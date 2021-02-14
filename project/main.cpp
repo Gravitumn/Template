@@ -11,6 +11,8 @@ Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk;
 RenderWindow window(VideoMode(1200, 800), "Project!");
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
+Texture CurrentPlayerHand[5];
+Texture CurrentBotHand[5];
 
 
 void drawCard();
@@ -19,12 +21,14 @@ void pcardselect(float [],float[]);
 void bcardselect(float [],float[]);
 void loadText(Font &font);
 std::string IntToString(int);
-void cardUse();
+void cardUse(bool isplayer);
+void effectphase(bool playerturn);
+void damageCalculate(int,bool);
 
 int main()
 {
     Font font;
-
+    bool playerturn = true;
     //background 
     Texture backgroundImage;
     Sprite bg;
@@ -33,9 +37,7 @@ int main()
     bg.setScale(1.7f,1.85f);
 
     //card Sprites
-    Texture CurrentPlayerHand[5];
     Sprite playerCard[5];
-    Texture CurrentBotHand[5];
     Sprite BotCard[5];
     int winner =0;
     srand(time(NULL));
@@ -75,9 +77,9 @@ int main()
                         Positionxbcard[i]=window.getSize().x-180-(180*i);
                         Positionybcard[i]=0;
                     }
+                effectphase(playerturn);
                 playerHand[pselectcard]=0;
                 BotHand[bselectcard]=0;
-                drawCard();
             }
 
             //status simulation
@@ -109,7 +111,12 @@ int main()
         }
 
         for(int i=0;i<5;i++){
+            if(Positionybcard[i]>=200.f){
+                CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));  
+            }
+            else{
             CurrentBotHand[i].loadFromFile("cardImage/back.png");
+            }
             BotCard[i].setScale(0.5f,0.5f);
             BotCard[i].setTexture(CurrentBotHand[i]);
             BotCard[i].setPosition(Positionxbcard[i],Positionybcard[i]);
@@ -262,6 +269,51 @@ std::string IntToString(int x){
     return str;
 }
 
-void cardUse(){
+void Healing(int heal,bool Isplayer){
+    if(Isplayer) playerHP += heal;
+    else botHP += heal;
+}
 
+void effectphase(bool playerturn){
+    if(playerturn == true){
+        cardUse(true);
+        cardUse(false);
+    }
+    else{
+        cardUse(false);
+        cardUse(true);
+    }
+}
+
+void cardUse(bool Isplayer){
+    int card = playerHand[pselectcard];
+    if(Isplayer) card = playerHand[pselectcard];
+    else card = BotHand[bselectcard];
+
+    if(card >=1 && card <= 6){ //Gomu Gomu no!
+        damageCalculate(10,Isplayer);
+    }
+
+    else if(card >= 7 && card <= 12){ //Jankenpon!!
+        int rps = rand()%3+1;
+        if(rps == 1) damageCalculate(15,Isplayer); //rock
+        else if(rps == 2){                          //paper
+            damageCalculate(3,Isplayer);
+            if(Isplayer == true) botAtk -=3;
+            else playerATK -=3;
+        }
+        else{                   //scissors
+            damageCalculate(5,Isplayer);
+            if(Isplayer == true) playerATK += 2;
+            else botAtk += 2;
+        }
+    }
+
+    else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
+    
+}
+
+void damageCalculate(int damage,bool Isplayer){
+    if(Isplayer) botHP = botHP - (damage+playerATK) - botDEF;
+    else playerHP = playerHP - (damage+botAtk) - playerDEF;
 }
