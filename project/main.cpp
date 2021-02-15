@@ -5,15 +5,19 @@ using namespace sf;
 //global variable
 int playerHand[5]={0,0,0,0,0};
 int BotHand[5]={0,0,0,0,0};
-int playerHP=80,botHP=80,pselectcard,bselectcard,botDEF=0,botAtk=0,playerATK=0,playerDEF=0;
+int playerHP=80,pselectcard,playerATK=0,playerDEF=0,PlayerLevel=0,playerRune=0; //player status
+int botHP=80,bselectcard,botDEF=0,botAtk=0,BotRune,BotLevel=0; // bot status
+int PlayerMaxRune;
+int BotMaxRune;
 int keytime = 10;
-Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk;
-RenderWindow window(VideoMode(1200, 800), "Project!");
+bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA;
+bool BotStun,BotPoison,BotBurn,BotIllu,BotCA;
+Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
 Texture CurrentPlayerHand[5];
 Texture CurrentBotHand[5];
-
+RenderWindow window(VideoMode(1200, 800), "Project!");
 
 void drawCard();
 std::string loadCard(int);
@@ -24,6 +28,7 @@ std::string IntToString(int);
 void cardUse(bool isplayer);
 void effectphase(bool playerturn);
 void damageCalculate(int,bool);
+void LevelUp();
 
 int main()
 {
@@ -52,6 +57,8 @@ int main()
     
     while (window.isOpen()&&winner==0)
     {   
+        PlayerMaxRune = 80+(PlayerLevel*20);
+        BotMaxRune = 80+(BotLevel*20);
         if(keytime<10)keytime++;
         //screen unwider
         Vector2u screen = Vector2u(1200,800);
@@ -99,6 +106,14 @@ int main()
                 keytime = 0;
                 botAtk +=1;
             }
+            if(Keyboard::isKeyPressed(Keyboard::Q) && keytime>=10){
+                keytime = 0;
+                PlayerStun = true;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::W) && keytime>=10){
+                keytime = 0;
+                playerRune+=10;
+            }
         }
         
         //Current Hand//
@@ -125,7 +140,8 @@ int main()
         //call text
         loadText(font);
 
-              
+        //Rune Check
+        LevelUp();    
         //draw background
         window.clear(Color::White);  
         window.draw(bg);
@@ -140,11 +156,13 @@ int main()
         window.draw(CurrentPlayerHP);//write current Hp.
         window.draw(Patk);//write current atk
         window.draw(Pdef);//write current def
+        window.draw(Prune);//write current rune
 
         //show bot status
         window.draw(CurrentBotHP);//write current Hp.
         window.draw(Batk);//write current atk
         window.draw(Bdef);//write current def
+        window.draw(Brune);//write current rune
 
         window.display();
 
@@ -208,7 +226,7 @@ void bcardselect(float Positionxbcard[],float Positionybcard[]){
 
 
 void loadText(Font &font){
-    std::string hp,atk,def;
+    std::string hp,atk,def,rune;
     font.loadFromFile("font/Bold.otf");
 
         //player hp//
@@ -235,6 +253,14 @@ void loadText(Font &font){
     def = "DEF : " + IntToString(playerDEF);
     Pdef.setString(def);
 
+        //player rune//
+    Prune.setCharacterSize(25);
+    Prune.setFillColor(Color::Black);
+    Prune.setFont(font);
+    Prune.setPosition(1000,750);
+    rune = "Rune : " + IntToString(playerRune) + " / " + IntToString(PlayerMaxRune);
+    Prune.setString(rune);
+
         //Bot hp//
     CurrentBotHP.setCharacterSize(25);
     CurrentBotHP.setFillColor(Color::Black);
@@ -259,6 +285,14 @@ void loadText(Font &font){
     def = "DEF : " + IntToString(botDEF);
     Bdef.setString(def);
 
+        //bot rune//
+    Brune.setCharacterSize(25);
+    Brune.setFillColor(Color::Black);
+    Brune.setFont(font);
+    Brune.setPosition(80,200);
+    rune = "Rune : " + IntToString(BotRune) + " / " + IntToString(BotMaxRune);
+    Brune.setString(rune);
+
 }
 
 std::string IntToString(int x){
@@ -276,12 +310,12 @@ void Healing(int heal,bool Isplayer){
 
 void effectphase(bool playerturn){
     if(playerturn == true){
-        cardUse(true);
-        cardUse(false);
+        if(!PlayerStun)cardUse(true);
+        if(!BotStun)cardUse(false);
     }
     else{
-        cardUse(false);
-        cardUse(true);
+        if(!BotStun)cardUse(false);
+        if(!PlayerStun)cardUse(true);
     }
 }
 
@@ -289,7 +323,6 @@ void cardUse(bool Isplayer){
     int card = playerHand[pselectcard];
     if(Isplayer) card = playerHand[pselectcard];
     else card = BotHand[bselectcard];
-
     if(card >=1 && card <= 6){ //Gomu Gomu no!
         damageCalculate(10,Isplayer);
     }
@@ -302,7 +335,7 @@ void cardUse(bool Isplayer){
             if(Isplayer == true) botAtk -=3;
             else playerATK -=3;
         }
-        else{                   //scissors
+        else{                                       //scissors
             damageCalculate(5,Isplayer);
             if(Isplayer == true) playerATK += 2;
             else botAtk += 2;
@@ -316,4 +349,15 @@ void cardUse(bool Isplayer){
 void damageCalculate(int damage,bool Isplayer){
     if(Isplayer) botHP = botHP - (damage+playerATK) - botDEF;
     else playerHP = playerHP - (damage+botAtk) - playerDEF;
+}
+
+void LevelUp(){
+    if(playerRune == PlayerMaxRune){
+        PlayerLevel++;
+        playerRune = 0;
+    }
+    if(BotMaxRune == BotRune){
+        BotLevel++;
+        BotRune = 0;
+    }
 }
