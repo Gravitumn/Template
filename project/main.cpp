@@ -10,8 +10,10 @@ int botHP=80,bselectcard,botDEF=0,botAtk=0,BotRune,BotLevel=0; // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
-bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected,PlayerUndying;
+bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false;
 bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying;
+int Ppoisoncount,Pburncount,Pillucount,Pundycount;
+int Bpoisoncount,Bburncount,Billucount,Bundycount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
@@ -30,6 +32,8 @@ void effectphase(bool playerturn);
 void damageCalculate(int,bool);
 void LevelUp();
 void endphase();
+void debuffUse();
+void turnCount();
 
 int main()
 {
@@ -78,18 +82,23 @@ int main()
             pcardselect(Positionxpcard,Positionypcard);
             if(Keyboard::isKeyPressed(Keyboard::A) && keytime>=10 && selected==true){
                 keytime = 0;
-                
-                for (int i = 0; i < 5; i++)
-                    {
-                        Positionxpcard[i]=180*i;
-                        Positionypcard[i]=window.getSize().y-250.f;
-                        Positionxbcard[i]=window.getSize().x-180-(180*i);
-                        Positionybcard[i]=0;
-                    }
-                effectphase(playerturn);
-                endphase();
-                playerHand[pselectcard]=0;
-                BotHand[bselectcard]=0;
+                if(botshow==true){
+                    for (int i = 0; i < 5; i++)
+                        {
+                            Positionxpcard[i]=180*i;
+                            Positionypcard[i]=window.getSize().y-250.f;
+                            Positionxbcard[i]=window.getSize().x-180-(180*i);
+                            Positionybcard[i]=0;
+                            botshow=false;
+                            effectphase(playerturn);
+                            endphase();
+                            playerHand[pselectcard]=0;
+                            BotHand[bselectcard]=0;
+                        }
+                }
+                else{
+                    botshow=true;
+                }
             }
 
             //status simulation
@@ -137,7 +146,7 @@ int main()
         }
 
         for(int i=0;i<5;i++){
-            if(Positionybcard[i]>=200.f){
+            if(Positionybcard[i]>=200.f && botshow == true){
                 CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));
             }
             else{
@@ -374,6 +383,7 @@ void damageCalculate(int damage,bool Isplayer){
     int totaldamage;
     if(Isplayer){
         totaldamage = damage+playerATK-botDEF;
+        if(PlayerCA)totaldamage*=2;
         if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
         else{
             if(BotUndying==true && botHP - totaldamage <= 0 ){
@@ -384,6 +394,7 @@ void damageCalculate(int damage,bool Isplayer){
     }
     else{
         totaldamage = damage+botAtk-playerDEF;
+        if(BotCA)totaldamage*=2;
         if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
         else {
             if(PlayerUndying == true && playerHP - totaldamage <= 0);
@@ -406,4 +417,50 @@ void LevelUp(){
 void endphase(){
     PlayerStun =false;
     BotStun = false;
+    PlayerCA =false;
+    BotCA = false;
+
+    debuffUse();
+    turnCount();
+    
+}
+
+void debuffUse(){
+    if(PlayerIllu)playerHP+=7;
+    if(BotIllu)botHP+=7;
+
+    if(PlayerBurn)playerHP-=3;
+    if(BotBurn)botHP-=3;
+
+    if(PlayerPoison)playerHP-=2;
+    if(BotPoison)botHP-=2;
+    
+    
+}
+
+void turnCount(){
+    if(Ppoisoncount!=0)Ppoisoncount-=1;
+    if(Bpoisoncount!=0)Bpoisoncount-=1;
+    
+    if(Pburncount!=0)Pburncount-=1;
+    if(Bburncount!=0)Bburncount-=1;
+
+    if(Pillucount!=0)Pillucount-=1;
+    if(Billucount!=0)Billucount-=1;
+
+    if(Pundycount!=0)Pundycount-=1;
+    if(Bundycount!=0)Bundycount-=1;
+
+    //checking
+    if(Ppoisoncount==0)PlayerPoison=false;
+    if(Bpoisoncount==0)BotPoison=false;
+
+    if(Pburncount==0)PlayerBurn=false;
+    if(Bburncount==0)BotBurn=false;
+
+    if(Pillucount==0)PlayerIllu=false;
+    if(Billucount==0)BotIllu=false;
+
+    if(Pundycount==0)PlayerUndying = false;
+    if(Bundycount==0)BotUndying = false;
 }
