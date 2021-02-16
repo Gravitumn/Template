@@ -10,7 +10,7 @@ int botHP=80,bselectcard,botDEF=0,botAtk=0,BotRune,BotLevel=0; // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
-bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA;
+bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected;
 bool BotStun,BotPoison,BotBurn,BotIllu,BotCA;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
@@ -75,7 +75,7 @@ int main()
 
             //turn end simalation
             pcardselect(Positionxpcard,Positionypcard);
-            if(Keyboard::isKeyPressed(Keyboard::A) && keytime>=10){
+            if(Keyboard::isKeyPressed(Keyboard::A) && keytime>=10 && selected==true){
                 keytime = 0;
                 for (int i = 0; i < 5; i++)
                     {
@@ -113,6 +113,10 @@ int main()
             if(Keyboard::isKeyPressed(Keyboard::W) && keytime>=10){
                 keytime = 0;
                 playerRune+=10;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::E) && keytime>=10){
+                keytime = 0;
+                playerDEF+=5;
             }
         }
         
@@ -203,10 +207,11 @@ std::string loadCard(int card){
     else return(NULL);
 }
 void pcardselect(float Positionxpcard[],float Positionypcard[]){
-    if(Mouse::isButtonPressed(Mouse::Left) && keytime >=10){
+    if(Mouse::isButtonPressed(Mouse::Left) && keytime >=10 ){
         keytime = 0;
         for (int i = 0; i < 5; i++){
             if(Mouse::getPosition(window).x>=180*i &&Mouse::getPosition(window).x<=180*(i+1) &&Mouse::getPosition(window).y>=550.f){
+                selected =true;
                 Positionxpcard[i]=300;  
                 Positionypcard[i]=300;
                 pselectcard=i;
@@ -323,6 +328,7 @@ void cardUse(bool Isplayer){
     int card = playerHand[pselectcard];
     if(Isplayer) card = playerHand[pselectcard];
     else card = BotHand[bselectcard];
+
     if(card >=1 && card <= 6){ //Gomu Gomu no!
         damageCalculate(10,Isplayer);
     }
@@ -344,11 +350,18 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
     
+    selected = false;
 }
 
 void damageCalculate(int damage,bool Isplayer){
-    if(Isplayer) botHP = botHP - (damage+playerATK) - botDEF;
-    else playerHP = playerHP - (damage+botAtk) - playerDEF;
+    if(Isplayer){
+        if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
+        else botHP = botHP - (damage+playerATK) - botDEF;
+    }
+    else{
+        if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
+        else playerHP = playerHP - (damage+botAtk) - playerDEF;
+    }
 }
 
 void LevelUp(){
