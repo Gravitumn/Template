@@ -10,8 +10,8 @@ int botHP=80,bselectcard,botDEF=0,botAtk=0,BotRune,BotLevel=0; // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
-bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected;
-bool BotStun,BotPoison,BotBurn,BotIllu,BotCA;
+bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected,PlayerUndying;
+bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
@@ -29,6 +29,7 @@ void cardUse(bool isplayer);
 void effectphase(bool playerturn);
 void damageCalculate(int,bool);
 void LevelUp();
+void endphase();
 
 int main()
 {
@@ -73,10 +74,11 @@ int main()
                 window.close();
         
 
-            //turn end simalation
+            //turn end simulation
             pcardselect(Positionxpcard,Positionypcard);
             if(Keyboard::isKeyPressed(Keyboard::A) && keytime>=10 && selected==true){
                 keytime = 0;
+                
                 for (int i = 0; i < 5; i++)
                     {
                         Positionxpcard[i]=180*i;
@@ -85,6 +87,7 @@ int main()
                         Positionybcard[i]=0;
                     }
                 effectphase(playerturn);
+                endphase();
                 playerHand[pselectcard]=0;
                 BotHand[bselectcard]=0;
             }
@@ -118,6 +121,10 @@ int main()
                 keytime = 0;
                 playerDEF+=5;
             }
+            if(Keyboard::isKeyPressed(Keyboard::R) && keytime>=10){
+                keytime = 0;
+                BotUndying = true;
+            }
         }
         
         //Current Hand//
@@ -131,16 +138,16 @@ int main()
 
         for(int i=0;i<5;i++){
             if(Positionybcard[i]>=200.f){
-                CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));  
+                CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));
             }
             else{
-            CurrentBotHand[i].loadFromFile("cardImage/back.png");
+                CurrentBotHand[i].loadFromFile("cardImage/back.png");
             }
             BotCard[i].setScale(0.5f,0.5f);
             BotCard[i].setTexture(CurrentBotHand[i]);
             BotCard[i].setPosition(Positionxbcard[i],Positionybcard[i]);
         }
-
+        
         //call text
         loadText(font);
 
@@ -211,11 +218,20 @@ void pcardselect(float Positionxpcard[],float Positionypcard[]){
         keytime = 0;
         for (int i = 0; i < 5; i++){
             if(Mouse::getPosition(window).x>=180*i &&Mouse::getPosition(window).x<=180*(i+1) &&Mouse::getPosition(window).y>=550.f){
-                selected =true;
-                Positionxpcard[i]=300;  
-                Positionypcard[i]=300;
-                pselectcard=i;
-                bcardselect(Positionxbcard,Positionybcard);        
+                if(selected == false){
+                    selected =true;
+                    Positionxpcard[i]=300;  
+                    Positionypcard[i]=300;
+                    pselectcard=i;
+                    bcardselect(Positionxbcard,Positionybcard);                    
+                }
+                else{
+                    Positionxpcard[i]=300;
+                    Positionypcard[i]=300;
+                    Positionxpcard[pselectcard]=180*pselectcard;
+                    Positionypcard[pselectcard]=550.f;
+                    pselectcard=i;
+                } 
             }
         }
     }
@@ -226,7 +242,7 @@ void bcardselect(float Positionxbcard[],float Positionybcard[]){
     i=rand()%5;
                 Positionxbcard[i]=600;  
                 Positionybcard[i]=300;
-                bselectcard=i;        
+                bselectcard=i;
 }       
 
 
@@ -349,18 +365,30 @@ void cardUse(bool Isplayer){
     }
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
+
     
     selected = false;
 }
 
 void damageCalculate(int damage,bool Isplayer){
+    int totaldamage;
     if(Isplayer){
+        totaldamage = damage+playerATK-botDEF;
         if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
-        else botHP = botHP - (damage+playerATK) - botDEF;
+        else{
+            if(BotUndying==true && botHP - totaldamage <= 0 ){
+                botHP = 1;
+            }
+            else botHP = botHP - totaldamage;
+        } 
     }
     else{
+        totaldamage = damage+botAtk-playerDEF;
         if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
-        else playerHP = playerHP - (damage+botAtk) - playerDEF;
+        else {
+            if(PlayerUndying == true && playerHP - totaldamage <= 0);
+            else playerHP = playerHP - totaldamage;
+        }   
     }
 }
 
@@ -373,4 +401,9 @@ void LevelUp(){
         BotLevel++;
         BotRune = 0;
     }
+}
+
+void endphase(){
+    PlayerStun =false;
+    BotStun = false;
 }
