@@ -377,8 +377,11 @@ void cardUse(bool Isplayer){
 
     else if(card >=19 && card <= 24) //illuminate
 
-    else if(card >=25 && card <=30) //flamethrower
-
+    else if(card >=25 && card <=30){ //flamethrower
+        damageCalculate(3,Isplayer);
+        if(Isplayer) BotBurn==true;
+        else PlayerBurn==true;
+    }
     else if(card >=31 && card <=36){ //smash!!! 
 	    damageCalculate(20,Isplayer);
 	    damageCalculate(5,!Isplayer);
@@ -422,7 +425,8 @@ void cardUse(bool Isplayer){
     } 
 
     else if(card >= 73 && card <= 75){  //colossal assault
-
+        if(Isplayer) PlayerCA == true;
+        else BotCA == true;
     }  
 
     else if(card >= 76 && card <= 78)  //explosive trap
