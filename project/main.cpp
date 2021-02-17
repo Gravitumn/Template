@@ -12,8 +12,8 @@ int BotMaxRune;
 int keytime = 10;
 bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false;
 bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying;
-int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount;
-int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount;
+int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount,Pstuncount;
+int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount,Bstuncount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
@@ -91,7 +91,6 @@ int main()
                             Positionybcard[i]=0;
                             botshow=false;
                             effectphase(playerturn);
-                            endphase();
                             playerHand[pselectcard]=0;
                             BotHand[bselectcard]=0;
                         }
@@ -99,6 +98,9 @@ int main()
                 else{
                     botshow=true;
                 }
+                
+                endphase();
+                
             }
 
             //status simulation
@@ -185,7 +187,6 @@ int main()
         window.draw(Brune);//write current rune
 
         window.display();
-
     }
     return 0;
 }
@@ -339,6 +340,8 @@ void Healing(int heal,bool Isplayer){
 }
 
 void effectphase(bool playerturn){
+    PlayerStun = false;
+    BotStun = false;
     if(playerturn == true){
         if(!PlayerStun)cardUse(true);
         if(!BotStun)cardUse(false);
@@ -347,6 +350,7 @@ void effectphase(bool playerturn){
         if(!BotStun)cardUse(false);
         if(!PlayerStun)cardUse(true);
     }
+    
 }
 
 void cardUse(bool Isplayer){
@@ -375,15 +379,32 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
 
+    else if(card>=43&&card<=48){                //Arc
+        damageCalculate(3,Isplayer);
+        if(Isplayer)BotStun = true;
+        else PlayerStun = true;
+    }
+
+    else if(card>=73&&card<=75){                    //Colossal Assault
+        if(Isplayer == true){
+            PlayerCA = true;
+            PCAcount = 2;
+        }
+        else{
+            BotCA = true;
+            BCAcount = 2;
+        }
+    }
+
     selected = false;
 }
 
 void damageCalculate(int damage,bool Isplayer){
     int totaldamage;
     if(Isplayer){
-        totaldamage = damage+playerATK-botDEF;
+        totaldamage = damage+playerATK;
         if(PlayerCA)totaldamage*=2;
-        if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
+        if(botDEF >= totaldamage) botDEF -= totaldamage;
         else{
             if(BotUndying==true && botHP - totaldamage <= 0 ){
                 botHP = 1;
@@ -392,11 +413,13 @@ void damageCalculate(int damage,bool Isplayer){
         } 
     }
     else{
-        totaldamage = damage+botAtk-playerDEF;
+        totaldamage = damage+botAtk;
         if(BotCA)totaldamage*=2;
-        if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
+        if(playerDEF >= totaldamage) playerDEF -= totaldamage;
         else {
-            if(PlayerUndying == true && playerHP - totaldamage <= 0);
+            if(PlayerUndying == true && playerHP - totaldamage <= 0){
+                playerHP = 1;
+            }
             else playerHP = playerHP - totaldamage;
         }   
     }
@@ -414,12 +437,8 @@ void LevelUp(){
 }
 
 void endphase(){
-    PlayerStun =false;
-    BotStun = false;
-
     debuffUse();
     turnCount();
-    
 }
 
 void debuffUse(){
@@ -436,20 +455,23 @@ void debuffUse(){
 }
 
 void turnCount(){
-    if(Ppoisoncount!=0)Ppoisoncount-=1;
-    if(Bpoisoncount!=0)Bpoisoncount-=1;
+    if(Ppoisoncount>0)Ppoisoncount-=1;
+    if(Bpoisoncount>0)Bpoisoncount-=1;
     
-    if(Pburncount!=0)Pburncount-=1;
-    if(Bburncount!=0)Bburncount-=1;
+    if(Pburncount>0)Pburncount-=1;
+    if(Bburncount>0)Bburncount-=1;
 
-    if(Pillucount!=0)Pillucount-=1;
-    if(Billucount!=0)Billucount-=1;
+    if(Pillucount>0)Pillucount-=1;
+    if(Billucount>0)Billucount-=1;
 
-    if(Pundycount!=0)Pundycount-=1;
-    if(Bundycount!=0)Bundycount-=1;
+    if(Pundycount>0)Pundycount-=1;
+    if(Bundycount>0)Bundycount-=1;
 
-    if(PCAcount!=0)PCAcount-=1;
-    if(BCAcount!=0)BCAcount-=1;
+    if(PCAcount>0)PCAcount-=1;
+    if(BCAcount>0)BCAcount-=1;
+
+    if(Pstuncount>0)Pstuncount-=1;
+    if(Bstuncount>0)Bstuncount-=1;
 
     //checking
     if(Ppoisoncount==0)PlayerPoison=false;
@@ -464,6 +486,9 @@ void turnCount(){
     if(Pundycount==0)PlayerUndying = false;
     if(Bundycount==0)BotUndying = false;
 
-    if(BCAcount==0)BCAcount= false;
-    if(PCAcount==0)PCAcount= false;
+    if(BCAcount==0)BotCA= false;
+    if(PCAcount==0)PlayerCA= false;
+
+    if(Pstuncount==0)PlayerStun = false;
+    if(Bstuncount==0)BotStun =false;
 }
