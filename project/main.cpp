@@ -234,7 +234,7 @@ void pcardselect(float Positionxpcard[],float Positionypcard[]){
                     pselectcard=i;
                     bcardselect(Positionxbcard,Positionybcard);                    
                 }
-                else{
+                else if(selected == true && botshow==false){
                     Positionxpcard[i]=300;
                     Positionypcard[i]=300;
                     Positionxpcard[pselectcard]=180*pselectcard;
@@ -448,14 +448,22 @@ void cardUse(bool Isplayer){
         else BotCA == true;
     }  
 
-    else if(card >= 76 && card <= 78)  //explosive trap
+    else if(card >= 76 && card <= 78){  //explosive trap
 
-    else if(card >= 79 && card <= 81)  //armor titan
+    }
 
-    else if(card >= 82 && card <= 87)  //blood thirster 
+    else if(card >= 79 && card <= 81){  //armor titan
 
-    else if(card >= 88 && card <= 90) //Not UBW. *The problem is how we can effectively check it's the bot's card that is used on the field.
+    }
 
+    else if(card >= 82 && card <= 87){  //blood thirster 
+
+    }
+
+    else if(card >= 88 && card <= 90){ //Not UBW. *The problem is how we can effectively check it's the bot's card that is used on the field.
+
+    }
+    
     else if(card == 91 || card == 92){  //undying rage
         if (Isplayer) PlayerUndying = true;
         else BotUndying = true;
@@ -465,12 +473,17 @@ void cardUse(bool Isplayer){
         
     }
 
-    else if(card == 95 || card == 96)  //sigil of power
+    else if(card == 95 || card == 96){  //sigil of power
 
-    else if(card == 97 || card == 98)  //destiny draw
+    }
 
-    else if(card == 99 || card == 100)  //chicabu tensei
+    else if(card == 97 || card == 98){  //destiny draw
 
+    }
+
+    else if(card == 99 || card == 100){  //chicabu tensei
+
+    }
 
     selected = false;
 }
