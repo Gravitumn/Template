@@ -12,8 +12,8 @@ int BotMaxRune;
 int keytime = 10;
 bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false,PlayerCounter;
 bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying,BotCounter;
-int Ppoisoncount,Pburncount,Pillucount,Pundycount;
-int Bpoisoncount,Bburncount,Billucount,Bundycount;
+int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount,Pstuncount;
+int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount,Bstuncount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
@@ -444,8 +444,14 @@ void cardUse(bool Isplayer){
     } 
 
     else if(card >= 73 && card <= 75){  //colossal assault
-        if(Isplayer) PlayerCA == true;
-        else BotCA == true;
+        if(Isplayer){
+            PlayerCA == true;
+            PCAcount = 2;
+        } 
+        else{
+            BotCA == true;
+            BCAcount = 2;
+        } 
     }  
 
     else if(card >= 76 && card <= 78){  //explosive trap
@@ -542,14 +548,15 @@ void LevelUp(){
 void endphase(){
     PlayerStun =false;
     BotStun = false;
+
     PlayerCA =false;
     BotCA = false;
+
     PlayerCounter = false;
     BotCounter = false;
 
     debuffUse();
-    turnCount();
-    
+    turnCount(); 
 }
 
 void debuffUse(){
@@ -566,17 +573,23 @@ void debuffUse(){
 }
 
 void turnCount(){
-    if(Ppoisoncount!=0)Ppoisoncount-=1;
-    if(Bpoisoncount!=0)Bpoisoncount-=1;
+    if(Ppoisoncount>0)Ppoisoncount-=1;
+    if(Bpoisoncount>0)Bpoisoncount-=1;
     
-    if(Pburncount!=0)Pburncount-=1;
-    if(Bburncount!=0)Bburncount-=1;
+    if(Pburncount>0)Pburncount-=1;
+    if(Bburncount>0)Bburncount-=1;
 
-    if(Pillucount!=0)Pillucount-=1;
-    if(Billucount!=0)Billucount-=1;
+    if(Pillucount>0)Pillucount-=1;
+    if(Billucount>0)Billucount-=1;
 
-    if(Pundycount!=0)Pundycount-=1;
-    if(Bundycount!=0)Bundycount-=1;
+    if(Pundycount>0)Pundycount-=1;
+    if(Bundycount>0)Bundycount-=1;
+
+    if(PCAcount>0)PCAcount-=1;
+    if(BCAcount>0)BCAcount-=1;
+
+    if(Pstuncount>0)Pstuncount-=1;
+    if(Bstuncount>0)Bstuncount-=1;
 
     //checking
     if(Ppoisoncount==0)PlayerPoison=false;
@@ -590,4 +603,10 @@ void turnCount(){
 
     if(Pundycount==0)PlayerUndying = false;
     if(Bundycount==0)BotUndying = false;
+
+    if(BCAcount==0)BotCA= false;
+    if(PCAcount==0)PlayerCA= false;
+
+    if(Pstuncount==0)PlayerStun = false;
+    if(Bstuncount==0)BotStun =false;
 }
