@@ -235,7 +235,7 @@ void pcardselect(float Positionxpcard[],float Positionypcard[]){
                     pselectcard=i;
                     bcardselect(Positionxbcard,Positionybcard);                    
                 }
-                else{
+                else if(selected == true && botshow==false){
                     Positionxpcard[i]=300;
                     Positionypcard[i]=300;
                     Positionxpcard[pselectcard]=180*pselectcard;
