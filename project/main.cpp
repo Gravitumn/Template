@@ -91,7 +91,6 @@ int main()
                             Positionybcard[i]=0;
                             botshow=false;
                             effectphase(playerturn);
-                            endphase();
                             playerHand[pselectcard]=0;
                             BotHand[bselectcard]=0;
                         }
@@ -100,7 +99,7 @@ int main()
                     botshow=true;
                 }
                 
-                
+                endphase();
                 
             }
 
@@ -342,10 +341,7 @@ void Healing(int heal,bool Isplayer){
 
 void effectphase(bool playerturn){
     if(playerturn == true){
-        if(!PlayerStun){
-            cardUse(true);
-            std::cout<<"not stun"<<std::endl;
-        }
+        if(!PlayerStun)cardUse(true);
         if(!BotStun)cardUse(false);
     }
     else{
@@ -381,80 +377,28 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
 
-    else if(card >=19 && card <= 24); //illuminate
-
-    else if(card >=25 && card <=30); //flamethrower
-
-    else if(card >=31 && card <=36){ //smash!!! 
-	    damageCalculate(20,Isplayer);
-	    damageCalculate(5,!Isplayer);
+    else if(card>=43&&card<=48){                //Arc
+        damageCalculate(3,Isplayer);
+        if(Isplayer){
+            BotStun = true;
+            Bstuncount = 2;
+        }
+        else{
+            PlayerStun = true;
+            Pstuncount = 2;
+        } 
     }
 
-    else if(card >=37 && card <=42); //sword! wait, it's trickster.
-
-    else if(card >=43 && card <=48){  //arc!!!
-	    damageCalculate(3,Isplayer);
-	    if(Isplayer) BotStun=true;
-	    else PlayerStun =true;
-    }
-
-    else if(card >=49 && card <=51){  //glacial prison
-
-    } 
-
-    else if(card >=52 && card <=57){  //rune of powar!!!!
-
-    } 
-
-    else if(card >= 58 && card <=60){  //abyssal powar!!!!
-
-    } 
-
-    else if(card >= 61 && card <= 63){  //demonic powar
-
-
-    } 
-
-    else if(card >= 64 && card <= 66){  //full counter
-
-    } 
-
-    else if(card >= 67 && card <= 69){   //rho aias
-
-    }
-
-    else if(card >= 70 && card <= 72){  //lamb's respite
-
-    } 
-
-    else if(card >= 73 && card <= 75){  //colossal assault
+    else if(card>=73&&card<=75){                    //Colossal Assault
         if(Isplayer == true){
             PlayerCA = true;
-            PCAcount = 2;
+            PCAcount = 3;
         }
         else{
             BotCA = true;
-            BCAcount = 2;
+            BCAcount = 3;
         }
-    }  
-
-    else if(card >= 76 && card <= 78);  //explosive trap
-
-    else if(card >= 79 && card <= 81);  //armor titan
-
-    else if(card >= 82 && card <= 87);  //blood thirster 
-
-    else if(card >= 88 && card <= 90); //Not UBW
-
-    else if(card == 91 || card == 92);  //undying rage
-
-    else if(card == 93 || card == 94); //berserker soul
-
-    else if(card == 95 || card == 96);  //sigil of power
-
-    else if(card == 97 || card == 98);  //destiny draw
-
-    else if(card == 99 || card == 100);  //chicabu tensei
+    }
 
     selected = false;
 }
@@ -551,4 +495,7 @@ void turnCount(){
 
     if(Pstuncount==0)PlayerStun = false;
     if(Bstuncount==0)BotStun =false;
+
+    std::cout<<Pstuncount<<std::endl;
+    std::cout<<PCAcount<<std::endl;
 }
