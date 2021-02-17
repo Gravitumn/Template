@@ -379,7 +379,6 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
 
-<<<<<<< HEAD
     else if(card>=43&&card<=48){                //Arc
         damageCalculate(3,Isplayer);
         if(Isplayer)BotStun = true;
@@ -397,17 +396,16 @@ void cardUse(bool Isplayer){
         }
     }
 
-=======
-    else if(card >=19 && card <= 24) //illuminate
+    else if(card >=19 && card <= 24); //illuminate
 
-    else if(card >=25 && card <=30) //flamethrower
+    else if(card >=25 && card <=30); //flamethrower
 
     else if(card >=31 && card <=36){ //smash!!! 
 	    damageCalculate(20,Isplayer);
 	    damageCalculate(5,!Isplayer);
     }
 
-    else if(card >=37 && card <=42) //sword! wait, it's trickster.
+    else if(card >=37 && card <=42); //sword! wait, it's trickster.
 
     else if(card >=43 && card <=48){  //arc!!!
 	    damageCalculate(3,Isplayer);
@@ -448,26 +446,24 @@ void cardUse(bool Isplayer){
 
     }  
 
-    else if(card >= 76 && card <= 78)  //explosive trap
+    else if(card >= 76 && card <= 78);  //explosive trap
 
-    else if(card >= 79 && card <= 81)  //armor titan
+    else if(card >= 79 && card <= 81);  //armor titan
 
-    else if(card >= 82 && card <= 87)  //blood thirster 
+    else if(card >= 82 && card <= 87);  //blood thirster 
 
-    else if(card >= 88 && card <= 90) //Not UBW
+    else if(card >= 88 && card <= 90); //Not UBW
 
-    else if(card == 91 || card == 92)  //undying rage
+    else if(card == 91 || card == 92);  //undying rage
 
-    else if(card == 93 || card == 94)  //berserker soul
+    else if(card == 93 || card == 94); //berserker soul
 
-    else if(card == 95 || card == 96)  //sigil of power
+    else if(card == 95 || card == 96);  //sigil of power
 
-    else if(card == 97 || card == 98)  //destiny draw
+    else if(card == 97 || card == 98);  //destiny draw
 
-    else if(card == 99 || card == 100)  //chicabu tensei
+    else if(card == 99 || card == 100);  //chicabu tensei
 
-
->>>>>>> 4f7e7d29d2a6c938f374acad724eff305eafe6a6
     selected = false;
 }
 
