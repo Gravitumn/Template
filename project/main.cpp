@@ -91,6 +91,7 @@ int main()
                             Positionybcard[i]=0;
                             botshow=false;
                             effectphase(playerturn);
+                            endphase();
                             playerHand[pselectcard]=0;
                             BotHand[bselectcard]=0;
                         }
@@ -99,7 +100,7 @@ int main()
                     botshow=true;
                 }
                 
-                endphase();
+                
                 
             }
 
@@ -340,10 +341,11 @@ void Healing(int heal,bool Isplayer){
 }
 
 void effectphase(bool playerturn){
-    PlayerStun = false;
-    BotStun = false;
     if(playerturn == true){
-        if(!PlayerStun)cardUse(true);
+        if(!PlayerStun){
+            cardUse(true);
+            std::cout<<"not stun"<<std::endl;
+        }
         if(!BotStun)cardUse(false);
     }
     else{
@@ -378,23 +380,6 @@ void cardUse(bool Isplayer){
     }
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
-
-    else if(card>=43&&card<=48){                //Arc
-        damageCalculate(3,Isplayer);
-        if(Isplayer)BotStun = true;
-        else PlayerStun = true;
-    }
-
-    else if(card>=73&&card<=75){                    //Colossal Assault
-        if(Isplayer == true){
-            PlayerCA = true;
-            PCAcount = 2;
-        }
-        else{
-            BotCA = true;
-            BCAcount = 2;
-        }
-    }
 
     else if(card >=19 && card <= 24); //illuminate
 
@@ -443,7 +428,14 @@ void cardUse(bool Isplayer){
     } 
 
     else if(card >= 73 && card <= 75){  //colossal assault
-
+        if(Isplayer == true){
+            PlayerCA = true;
+            PCAcount = 2;
+        }
+        else{
+            BotCA = true;
+            BCAcount = 2;
+        }
     }  
 
     else if(card >= 76 && card <= 78);  //explosive trap
