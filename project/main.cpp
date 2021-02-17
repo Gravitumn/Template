@@ -10,8 +10,8 @@ int botHP=80,bselectcard,botDEF=0,botAtk=0,BotRune,BotLevel=0; // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
-bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false;
-bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying;
+bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false,PlayerCounter;
+bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying,BotCounter;
 int Ppoisoncount,Pburncount,Pillucount,Pundycount;
 int Bpoisoncount,Bburncount,Billucount,Bundycount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
@@ -375,19 +375,27 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
 
-    else if(card >=19 && card <= 24) //illuminate
+    else if(card >=19 && card <= 24){ //illuminate
+        if (Isplayer) PlayerIllu==true;
+        else BotIllu=true;
+    }
 
     else if(card >=25 && card <=30){ //flamethrower
         damageCalculate(3,Isplayer);
         if(Isplayer) BotBurn==true;
         else PlayerBurn==true;
     }
+
     else if(card >=31 && card <=36){ //smash!!! 
 	    damageCalculate(20,Isplayer);
 	    damageCalculate(5,!Isplayer);
     }
 
-    else if(card >=37 && card <=42) //sword! wait, it's trickster.
+    else if(card >=37 && card <=42){ //sword! wait, it's trickster.
+        damageCalculate(5,Isplayer);
+        if (Isplayer) BotPoison == true;
+        else PlayerPoison == true;
+    }
 
     else if(card >=43 && card <=48){  //arc!!!
 	    damageCalculate(3,Isplayer);
@@ -396,15 +404,25 @@ void cardUse(bool Isplayer){
     }
 
     else if(card >=49 && card <=51){  //glacial prison
-
+        if(Isplayer){ 
+            BotStun=true;
+            botDEF-=5;
+        }
+	    else{ 
+            PlayerStun =true;
+            playerDEF -=5;
+        }
     } 
 
     else if(card >=52 && card <=57){  //rune of powar!!!!
 
+        
     } 
 
     else if(card >= 58 && card <=60){  //abyssal powar!!!!
-
+        if (Isplayer) playerRune+=1;
+        else BotRune+=1;
+        damageCalculate(15,!Isplayer);
     } 
 
     else if(card >= 61 && card <= 63){  //demonic powar
@@ -413,7 +431,8 @@ void cardUse(bool Isplayer){
     } 
 
     else if(card >= 64 && card <= 66){  //full counter
-
+        if (Isplayer) PlayerCounter = true;
+        else BotCounter = true;
     } 
 
     else if(card >= 67 && card <= 69){   //rho aias
@@ -435,11 +454,16 @@ void cardUse(bool Isplayer){
 
     else if(card >= 82 && card <= 87)  //blood thirster 
 
-    else if(card >= 88 && card <= 90) //Not UBW
+    else if(card >= 88 && card <= 90) //Not UBW. *The problem is how we can effectively check it's the bot's card that is used on the field.
 
-    else if(card == 91 || card == 92)  //undying rage
+    else if(card == 91 || card == 92){  //undying rage
+        if (Isplayer) PlayerUndying = true;
+        else BotUndying = true;
+    }
 
-    else if(card == 93 || card == 94)  //berserker soul
+    else if(card == 93 || card == 94){  //berserker soul
+        
+    }
 
     else if(card == 95 || card == 96)  //sigil of power
 
@@ -456,7 +480,14 @@ void damageCalculate(int damage,bool Isplayer){
     if(Isplayer){
         totaldamage = damage+playerATK-botDEF;
         if(PlayerCA)totaldamage*=2;
-        if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
+        if(BotCounter){  //when a counter card is used.
+            if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
+            else{
+                if(PlayerUndying == true && playerHP - totaldamage <= 0) playerHP=1;
+                else playerHP = playerHP - totaldamage;
+            }
+        }
+        else if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
         else{
             if(BotUndying==true && botHP - totaldamage <= 0 ){
                 botHP = 1;
@@ -467,9 +498,18 @@ void damageCalculate(int damage,bool Isplayer){
     else{
         totaldamage = damage+botAtk-playerDEF;
         if(BotCA)totaldamage*=2;
-        if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
+        if (PlayerCounter){
+            if(botDEF >= damage+playerATK) botDEF -= damage+playerATK;
+            else{
+                if(BotUndying==true && botHP - totaldamage <= 0 ){
+                    botHP = 1;
+                }
+                else botHP = botHP - totaldamage;
+            } 
+        }
+        else if(playerDEF >= damage+botAtk) playerDEF -= damage+botAtk;
         else {
-            if(PlayerUndying == true && playerHP - totaldamage <= 0);
+            if(PlayerUndying == true && playerHP - totaldamage <= 0) playerHP=1;
             else playerHP = playerHP - totaldamage;
         }   
     }
@@ -491,6 +531,8 @@ void endphase(){
     BotStun = false;
     PlayerCA =false;
     BotCA = false;
+    PlayerCounter = false;
+    BotCounter = false;
 
     debuffUse();
     turnCount();
