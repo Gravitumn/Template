@@ -12,8 +12,8 @@ int BotMaxRune;
 int keytime = 10;
 bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false;
 bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying;
-int Ppoisoncount,Pburncount,Pillucount,Pundycount;
-int Bpoisoncount,Bburncount,Billucount,Bundycount;
+int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount;
+int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
@@ -375,7 +375,6 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
 
-    
     selected = false;
 }
 
@@ -417,8 +416,6 @@ void LevelUp(){
 void endphase(){
     PlayerStun =false;
     BotStun = false;
-    PlayerCA =false;
-    BotCA = false;
 
     debuffUse();
     turnCount();
@@ -451,6 +448,9 @@ void turnCount(){
     if(Pundycount!=0)Pundycount-=1;
     if(Bundycount!=0)Bundycount-=1;
 
+    if(PCAcount!=0)PCAcount-=1;
+    if(BCAcount!=0)BCAcount-=1;
+
     //checking
     if(Ppoisoncount==0)PlayerPoison=false;
     if(Bpoisoncount==0)BotPoison=false;
@@ -463,4 +463,7 @@ void turnCount(){
 
     if(Pundycount==0)PlayerUndying = false;
     if(Bundycount==0)BotUndying = false;
+
+    if(BCAcount==0)BCAcount= false;
+    if(PCAcount==0)PCAcount= false;
 }
