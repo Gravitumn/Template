@@ -11,7 +11,7 @@ int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
 bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false;
-bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying;
+bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying,End;
 int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount,Pstuncount;
 int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount,Bstuncount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
@@ -99,8 +99,10 @@ int main()
                     botshow=true;
                 }
                 
-                endphase();
+                if(End)endphase();
                 
+                if(End == true)End = false;
+                else End = true;
             }
 
             //status simulation
@@ -163,7 +165,8 @@ int main()
         loadText(font);
 
         //Rune Check
-        LevelUp();    
+        LevelUp();
+         
         //draw background
         window.clear(Color::White);  
         window.draw(bg);
@@ -348,7 +351,6 @@ void effectphase(bool playerturn){
         if(!BotStun)cardUse(false);
         if(!PlayerStun)cardUse(true);
     }
-    
 }
 
 void cardUse(bool Isplayer){
@@ -377,6 +379,17 @@ void cardUse(bool Isplayer){
 
     else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
 
+    else if(card>=19&&card<=24){    //Illuminate
+        if(Isplayer){
+            PlayerIllu = true;
+            Pillucount = 3;
+        }
+        else{
+            BotIllu = true;
+            Billucount = 3;
+        }
+    }
+
     else if(card>=43&&card<=48){                //Arc
         damageCalculate(3,Isplayer);
         if(Isplayer){
@@ -392,11 +405,11 @@ void cardUse(bool Isplayer){
     else if(card>=73&&card<=75){                    //Colossal Assault
         if(Isplayer == true){
             PlayerCA = true;
-            PCAcount = 3;
+            PCAcount = 2;
         }
         else{
             BotCA = true;
-            BCAcount = 3;
+            BCAcount = 2;
         }
     }
 
@@ -408,6 +421,7 @@ void damageCalculate(int damage,bool Isplayer){
     if(Isplayer){
         totaldamage = damage+playerATK;
         if(PlayerCA)totaldamage*=2;
+        if(totaldamage<0)totaldamage = 0;
         if(botDEF >= totaldamage) botDEF -= totaldamage;
         else{
             if(BotUndying==true && botHP - totaldamage <= 0 ){
@@ -419,6 +433,7 @@ void damageCalculate(int damage,bool Isplayer){
     else{
         totaldamage = damage+botAtk;
         if(BotCA)totaldamage*=2;
+        if(totaldamage<0)totaldamage = 0;
         if(playerDEF >= totaldamage) playerDEF -= totaldamage;
         else {
             if(PlayerUndying == true && playerHP - totaldamage <= 0){
@@ -441,6 +456,7 @@ void LevelUp(){
 }
 
 void endphase(){
+    
     debuffUse();
     turnCount();
 }
@@ -496,6 +512,5 @@ void turnCount(){
     if(Pstuncount==0)PlayerStun = false;
     if(Bstuncount==0)BotStun =false;
 
-    std::cout<<Pstuncount<<std::endl;
-    std::cout<<PCAcount<<std::endl;
+
 }
