@@ -381,12 +381,41 @@ void cardUse(bool Isplayer){
 
     else if(card>=19&&card<=24){    //Illuminate
         if(Isplayer){
-            PlayerIllu = true;
+            PlayerIllu = true;    
             Pillucount = 3;
         }
         else{
             BotIllu = true;
             Billucount = 3;
+        }
+    }
+
+    else if(card>=25&&card<=30){  //flamethrower
+        damageCalculate(3,Isplayer);
+        if(Isplayer){
+            BotBurn = true;
+            Bburncount = 3;
+        }
+        else{
+            PlayerBurn = true;
+            Pburncount = 3;
+        }
+    }
+
+    else if(card>=31 && card<=36){      //smash!!!
+        damageCalculate(20,Isplayer);
+        damageCalculate(5,!Isplayer);
+    }
+
+    else if(card>=37 && card<=42){      //trickster
+        damageCalculate(5,Isplayer);
+        if(Isplayer){
+            BotPoison = true;
+            Bpoisoncount = 5;
+        }
+        else{
+            PlayerPoison = true;
+            Ppoisoncount = 5;
         }
     }
 
