@@ -62,8 +62,8 @@ int main()
     
     while (window.isOpen()&&winner==0)
     {   
-        PlayerMaxRune = 80+(PlayerLevel*20);
-        BotMaxRune = 80+(BotLevel*20);
+        PlayerMaxRune = 40+(PlayerLevel*20);
+        BotMaxRune = 40+(BotLevel*20);
         if(keytime<10)keytime++;
         //screen unwider
         Vector2u screen = Vector2u(1200,800);
@@ -449,8 +449,8 @@ void cardUse(bool Isplayer){
 void damageCalculate(int damage,bool Isplayer){
     int totaldamage;
     if(Isplayer){
+        if(PlayerCA)damage*=2;
         totaldamage = damage+playerATK;
-        if(PlayerCA)totaldamage*=2;
         if(totaldamage<0)totaldamage = 0;
         if(botDEF >= totaldamage) botDEF -= totaldamage;
         else{
@@ -461,8 +461,8 @@ void damageCalculate(int damage,bool Isplayer){
         } 
     }
     else{
+        if(BotCA)damage*=2;
         totaldamage = damage+botAtk;
-        if(BotCA)totaldamage*=2;
         if(totaldamage<0)totaldamage = 0;
         if(playerDEF >= totaldamage) playerDEF -= totaldamage;
         else {
