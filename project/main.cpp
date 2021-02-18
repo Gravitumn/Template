@@ -10,8 +10,8 @@ int botHP=80,bselectcard,botDEF=0,botAtk=0,BotRune,BotLevel=0; // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
-bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false;
-bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying,End;
+bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false,PrawStun;
+bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying,End,BrawStun;
 int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount,Pstuncount;
 int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount,Bstuncount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
@@ -38,7 +38,7 @@ void turnCount();
 int main()
 {
     Font font;
-    bool playerturn = true;
+    bool PlayerStart = true;
     //background 
     Texture backgroundImage;
     Sprite bg;
@@ -90,7 +90,7 @@ int main()
                             Positionxbcard[i]=window.getSize().x-180-(180*i);
                             Positionybcard[i]=0;
                             botshow=false;
-                            effectphase(playerturn);
+                            effectphase(PlayerStart);
                             playerHand[pselectcard]=0;
                             BotHand[bselectcard]=0;
                         }
@@ -342,8 +342,8 @@ void Healing(int heal,bool Isplayer){
     else botHP += heal;
 }
 
-void effectphase(bool playerturn){
-    if(playerturn == true){
+void effectphase(bool PlayerStart){
+    if(PlayerStart == true){
         if(!PlayerStun)cardUse(true);
         if(!BotStun)cardUse(false);
     }
@@ -354,6 +354,7 @@ void effectphase(bool playerturn){
 }
 
 void cardUse(bool Isplayer){
+    
     int card = playerHand[pselectcard];
     if(Isplayer) card = playerHand[pselectcard];
     else card = BotHand[bselectcard];
@@ -422,11 +423,11 @@ void cardUse(bool Isplayer){
     else if(card>=43&&card<=48){                //Arc
         damageCalculate(3,Isplayer);
         if(Isplayer){
-            BotStun = true;
+            BrawStun = true;
             Bstuncount = 1;
         }
         else{
-            PlayerStun = true;
+            PrawStun = true;
             Pstuncount = 1;
         } 
     }
@@ -485,7 +486,6 @@ void LevelUp(){
 }
 
 void endphase(){
-    
     debuffUse();
     turnCount();
 }
@@ -541,5 +541,13 @@ void turnCount(){
     if(Pstuncount==0)PlayerStun = false;
     if(Bstuncount==0)BotStun =false;
 
-
+    if(PrawStun == true){
+        PrawStun=false;
+        PlayerStun = true;
+    }
+    if(BrawStun == true){
+        BrawStun = false;
+        BotStun = true;
+    }
+    
 }
