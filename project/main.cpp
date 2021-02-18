@@ -473,14 +473,18 @@ void damageCalculate(int damage,bool Isplayer){
         }   
     }
 }
-
+void LevelDown(){
+    
+}
 void LevelUp(){
     if(playerRune == PlayerMaxRune){
         PlayerLevel++;
+        playerATK += 5;
         playerRune = 0;
     }
     if(BotMaxRune == BotRune){
         BotLevel++;
+        botAtk += 5;
         BotRune = 0;
     }
 }
