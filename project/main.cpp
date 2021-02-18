@@ -394,11 +394,11 @@ void cardUse(bool Isplayer){
         damageCalculate(3,Isplayer);
         if(Isplayer){
             BotStun = true;
-            Bstuncount = 2;
+            Bstuncount = 1;
         }
         else{
             PlayerStun = true;
-            Pstuncount = 2;
+            Pstuncount = 1;
         } 
     }
 
