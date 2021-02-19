@@ -12,8 +12,8 @@ int BotMaxRune;
 int keytime = 10;
 bool PlayerStun,PlayerPoison,PlayerBurn,PlayerIllu,PlayerCA,selected=false,PlayerUndying,botshow=false,PrawStun;
 bool BotStun,BotPoison,BotBurn,BotIllu,BotCA,BotUndying,End,BrawStun;
-int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount,Pstuncount;
-int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount,Bstuncount;
+int Ppoisoncount,Pburncount,Pillucount,Pundycount,PCAcount;
+int Bpoisoncount,Bburncount,Billucount,Bundycount,BCAcount;
 Text CurrentPlayerHP,CurrentBotHP,Pdef,Patk,Bdef,Batk,Prune,Brune;
 float Positionxpcard[5]={},Positionypcard[5]={};
 float Positionxbcard[5]={},Positionybcard[5]={};
@@ -367,18 +367,18 @@ void cardUse(bool Isplayer){
         int rps = rand()%3+1;
         if(rps == 1) damageCalculate(15,Isplayer); //rock
         else if(rps == 2){                          //paper
-            damageCalculate(3,Isplayer);
-            if(Isplayer == true) botAtk -=3;
-            else playerATK -=3;
+            damageCalculate(2,Isplayer);
+            if(Isplayer == true) botAtk -=1;
+            else playerATK -=1;
         }
         else{                                       //scissors
-            damageCalculate(5,Isplayer);
-            if(Isplayer == true) playerATK += 2;
-            else botAtk += 2;
+            damageCalculate(2,Isplayer);
+            if(Isplayer == true) playerATK += 1;
+            else botAtk += 1;
         }
     }
 
-    else if(card >=13 && card <= 18) Healing(15,Isplayer); //holy light
+    else if(card >=13 && card <= 18) Healing(12,Isplayer); //holy light
 
     else if(card>=19&&card<=24){    //Illuminate
         if(Isplayer){
@@ -404,12 +404,12 @@ void cardUse(bool Isplayer){
     }
 
     else if(card>=31 && card<=36){      //smash!!!
-        damageCalculate(20,Isplayer);
+        damageCalculate(15,Isplayer);
         damageCalculate(5,!Isplayer);
     }
 
     else if(card>=37 && card<=42){      //trickster
-        damageCalculate(5,Isplayer);
+        damageCalculate(3,Isplayer);
         if(Isplayer){
             BotPoison = true;
             Bpoisoncount = 5;
@@ -424,11 +424,9 @@ void cardUse(bool Isplayer){
         damageCalculate(3,Isplayer);
         if(Isplayer){
             BrawStun = true;
-            Bstuncount = 1;
         }
         else{
             PrawStun = true;
-            Pstuncount = 1;
         } 
     } 
     
@@ -437,13 +435,11 @@ void cardUse(bool Isplayer){
         if(Isplayer == true){
             botDEF = botDEF-5;
             BrawStun = true;
-            Bstuncount = Bstuncount+1;
         }  
         else
         {
             playerDEF = playerDEF-5;
-            PlayerStun = true;
-            Pstuncount = Pstuncount+1;                 
+            PrawStun = true;               
         }                           
 
     }
@@ -465,10 +461,10 @@ void cardUse(bool Isplayer){
     {
         if(Isplayer == true)
         {
-            playerDEF = playerDEF+20;
+            playerDEF = playerDEF+15;
         }
         else{
-            botDEF = botDEF+20;
+            botDEF = botDEF+15;
         }
     }
 
@@ -480,6 +476,37 @@ void cardUse(bool Isplayer){
         else{
             BotCA = true;
             BCAcount = 2;
+        }
+    }
+    else if(card >= 82 && card <= 87)                 //blodd thirster #19
+    {
+       damageCalculate(6,Isplayer);
+       Healing(6,Isplayer);
+    }
+    else if(card >= 95 && card <= 96)              //sigil of power #23
+    {
+        if(Isplayer == true)
+        {
+            botHP = botHP-10;
+            PlayerLevel++;
+        }
+        else
+        {
+            playerHP = playerHP-10;
+            BotLevel++;
+        }
+    }
+    else if(card >= 99 && card <= 100)             //chibaku tensei #25
+    {
+        if(Isplayer == true)
+        {
+            botHP = botHP-20;
+            BrawStun = true;
+
+        }
+        else{
+            playerHP = playerHP-20;
+            PrawStun = true;
         }
     }
 
@@ -535,8 +562,8 @@ void endphase(){
 }
 
 void debuffUse(){
-    if(PlayerIllu)playerHP+=7;
-    if(BotIllu)botHP+=7;
+    if(PlayerIllu)playerHP+=5;
+    if(BotIllu)botHP+=5;
 
     if(PlayerBurn)playerHP-=3;
     if(BotBurn)botHP-=3;
@@ -544,7 +571,8 @@ void debuffUse(){
     if(PlayerPoison)playerHP-=2;
     if(BotPoison)botHP-=2;
     
-    
+    if(botDEF<0)botDEF = 0;
+    if(playerDEF<0)playerDEF = 0;
 }
 
 void turnCount(){
@@ -563,8 +591,6 @@ void turnCount(){
     if(PCAcount>0)PCAcount-=1;
     if(BCAcount>0)BCAcount-=1;
 
-    if(Pstuncount>0)Pstuncount-=1;
-    if(Bstuncount>0)Bstuncount-=1;
 
     //checking
     if(Ppoisoncount==0)PlayerPoison=false;
@@ -582,8 +608,8 @@ void turnCount(){
     if(BCAcount==0)BotCA= false;
     if(PCAcount==0)PlayerCA= false;
 
-    if(Pstuncount==0)PlayerStun = false;
-    if(Bstuncount==0)BotStun =false;
+    PlayerStun = false;
+    BotStun = false;
 
     if(PrawStun == true){
         PrawStun=false;
