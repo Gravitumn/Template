@@ -430,6 +430,46 @@ void cardUse(bool Isplayer){
             PrawStun = true;
             Pstuncount = 1;
         } 
+    } 
+    
+    else if(card >= 49 && card <= 51)                 //gracial prison  // not sure +1 or =1 if it already had one 
+    {
+        if(Isplayer == true){
+            botDEF = botDEF-5;
+            BrawStun = true;
+            Bstuncount = Bstuncount+1;
+        }  
+        else
+        {
+            playerDEF = playerDEF-5;
+            PlayerStun = true;
+            Pstuncount = Pstuncount+1;                 
+        }                           
+
+    }
+
+     else if(card >= 61 && card <= 63 )                 //demonic course
+    {
+        if(Isplayer == true)
+        {
+            botDEF = botDEF-20;
+            
+        }
+        else
+        {
+            playerDEF = playerDEF-20;
+            
+        }
+    }
+         else if(card >= 67 && card <= 69)                  //rho aias
+    {
+        if(Isplayer == true)
+        {
+            playerDEF = playerDEF+20;
+        }
+        else{
+            botDEF = botDEF+20;
+        }
     }
 
     else if(card>=73&&card<=75){                    //Colossal Assault
