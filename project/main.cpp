@@ -560,13 +560,27 @@ void cardUse(bool Isplayer)
     {
         if (Isplayer == true)
         {
-            botDEF = botDEF - 10;
-            playerDEF = playerDEF + 10;
+            if (botDEF - 10 >= 0){
+                botDEF = botDEF - 10;
+                playerDEF = playerDEF + 10;
+            }
+            else{
+                playerDEF += botDEF;
+                botDEF = 0;
+            }
+            
         }
         else
         {
-            playerDEF = playerDEF - 10;
-            botDEF = botDEF + 10;
+            if (playerDEF - 10 >= 0){
+                playerDEF = playerDEF - 10;
+                botDEF = botDEF + 10;
+            }
+            else{
+                botDEF += playerDEF;
+                playerDEF = 0;
+            }
+            
         }
     }
     else if (card >= 64 && card <= 66) //full counter #13
