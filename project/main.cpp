@@ -616,6 +616,30 @@ void cardUse(bool Isplayer)
             PrawStun = true;
         }
     }
+    else if (card >= 58 && card <= 60) //abyssal power #11
+    {
+        if (Isplayer)
+        {
+            playerRune += 60;
+            playerHP -= 15;
+        }
+        else
+        {
+            BotRune += 60;
+            botHP -= 15;
+        }
+    }
+    else if (card >= 52 && card <= 57) //rune power #10
+    {
+        if (Isplayer)
+        {
+            playerRune += 20;
+        }
+        else
+        {
+            BotRune += 20;
+        }
+    }
 
     selected = false;
 }
