@@ -10,6 +10,7 @@ int botHP = 80, bselectcard, botDEF = 0, botAtk = 0, BotRune, BotLevel = 0;     
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
+bool botwin = false,playerwin = false,withdraw = false;
 bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun;
 bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount;
@@ -34,6 +35,8 @@ void LevelUp();
 void endphase();
 void debuffUse();
 void turnCount();
+void wincondition();
+void restart();
 
 int main()
 {
@@ -79,80 +82,47 @@ int main()
         {
             if (event.type == Event::Closed)
                 window.close();
-
-            //turn end simulation
-            pcardselect(Positionxpcard, Positionypcard);
-            if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
-            {
-                keytime = 0;
-                if (botshow == true)
+            if(botwin == false && playerwin == false && withdraw == false){
+                    
+                //turn end simulation
+                pcardselect(Positionxpcard, Positionypcard);
+                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
                 {
-                    for (int i = 0; i < 5; i++)
+                    keytime = 0;
+                    if (botshow == true)
                     {
-                        Positionxpcard[i] = 180 * i;
-                        Positionypcard[i] = window.getSize().y - 250.f;
-                        Positionxbcard[i] = window.getSize().x - 180 - (180 * i);
-                        Positionybcard[i] = 0;
-                        botshow = false;
-                        effectphase(PlayerStart);
-                        playerHand[pselectcard] = 0;
-                        BotHand[bselectcard] = 0;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            Positionxpcard[i] = 180 * i;
+                            Positionypcard[i] = window.getSize().y - 250.f;
+                            Positionxbcard[i] = window.getSize().x - 180 - (180 * i);
+                            Positionybcard[i] = 0;
+                            botshow = false;
+                            effectphase(PlayerStart);
+                            playerHand[pselectcard] = 0;
+                            BotHand[bselectcard] = 0;
+                        }
                     }
+                    else
+                    {
+                        botshow = true;
+                    }
+                    
+
+
+                    //endphase condition
+                    if (End)endphase();
+
+                    if (End == true)
+                        End = false;
+                    else
+                        End = true;
                 }
-                else
-                {
-                    botshow = true;
+            }
+            else if(botwin == true || playerwin == true || withdraw == true){
+                if(Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10){
+                    restart();
                 }
-
-                if (End)
-                    endphase();
-
-                if (End == true)
-                    End = false;
-                else
-                    End = true;
-            }
-
-            //status simulation
-            if (Keyboard::isKeyPressed(Keyboard::S) && keytime >= 10)
-            {
-                keytime = 0;
-                playerHP -= 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::D) && keytime >= 10)
-            {
-                keytime = 0;
-                botHP -= 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::F) && keytime >= 10)
-            {
-                keytime = 0;
-                playerATK += 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::G) && keytime >= 10)
-            {
-                keytime = 0;
-                botAtk += 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::Q) && keytime >= 10)
-            {
-                keytime = 0;
-                PlayerStun = true;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::W) && keytime >= 10)
-            {
-                keytime = 0;
-                playerRune += 10;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::E) && keytime >= 10)
-            {
-                keytime = 0;
-                playerDEF += 5;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10)
-            {
-                keytime = 0;
-                BotUndying = true;
             }
         }
 
@@ -410,17 +380,30 @@ void effectphase(bool PlayerStart)
     if (PlayerStart == true)
     {
         if (!PlayerStun)
+        {
             cardUse(true);
+            wincondition();
+        }
         if (!BotStun)
+        {
             cardUse(false);
+            wincondition();
+        }
     }
     else
     {
         if (!BotStun)
+        {
             cardUse(false);
+            wincondition();
+        }
         if (!PlayerStun)
+        {
             cardUse(true);
+            wincondition();
+        }
     }
+    
 }
 
 void cardUse(bool Isplayer)
@@ -652,12 +635,12 @@ void cardUse(bool Isplayer)
         if (Isplayer)
         {
             damageCalculate(10, Isplayer);
-            PlayerLevel++;
+            playerRune += PlayerMaxRune;
         }
         else
         {
             damageCalculate(10, !Isplayer);
-            BotLevel++;
+            BotRune += BotMaxRune;
         }
     }
     else if (card >= 97 && card <= 98) //destiny draw #24
@@ -722,9 +705,6 @@ void damageCalculate(int damage, bool Isplayer)
         }
     }
 }
-void LevelDown()
-{
-}
 void LevelUp()
 {
     if (playerRune >= PlayerMaxRune)
@@ -745,7 +725,9 @@ void LevelUp()
 void endphase()
 {
     debuffUse();
+    wincondition();
     turnCount();
+    
 }
 
 void debuffUse()
@@ -837,4 +819,30 @@ void turnCount()
         BrawStun = false;
         BotStun = true;
     }
+}
+
+void wincondition(){
+    if(playerHP <= 0 && botHP <=0)withdraw = true;
+    else if(playerHP <= 0)botwin = true;
+    else if(botHP <= 0) playerwin = true;
+}
+
+void restart(){
+    for(int i=0;i<5;i++)playerHand[i] = 0;
+    for(int i=0;i<5;i++)BotHand[i] = 0;
+    playerHP = 80; botHP = 80;
+    playerATK = 0; botAtk = 0;
+    playerDEF = 0; botDEF = 0;
+    playerRune = 0; BotRune = 0;
+    BotLevel = 0; PlayerLevel =0;
+    PlayerStun = false; BotStun = false;
+    PlayerPoison = false; BotPoison = false;
+    PlayerBurn = false; BotBurn = false;
+    PlayerIllu = false; BotIllu = false;
+    PlayerUndying = false; BotUndying = false;
+    PrawStun = false; BrawStun = false;
+    Ppoisoncount = 0; Bpoisoncount = 0;
+    Pburncount = 0; Bburncount = 0;
+    PCAcount = 0; BCAcount = 0;
+    Pillucount = 0; Billucount = 0;
 }
