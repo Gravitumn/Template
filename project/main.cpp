@@ -18,8 +18,8 @@ int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
-Texture CurrentPlayerHand[5];
-Texture CurrentBotHand[5];
+Texture CurrentPlayerHand[5],Pcrystal[6];
+Texture CurrentBotHand[5],Bcrystal[6];
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
 void drawCard();
@@ -37,6 +37,7 @@ void debuffUse();
 void turnCount();
 void wincondition();
 void restart();
+void loadcrystal();
 
 int main()
 {
@@ -48,6 +49,10 @@ int main()
     backgroundImage.loadFromFile("cardImage/bg.jpg");
     bg.setTexture(backgroundImage);
     bg.setScale(1.7f, 1.85f);
+
+    //crystal
+    Sprite Pcryst[6];
+    Sprite Bcryst[6];
 
     //card Sprites
     Sprite playerCard[5];
@@ -154,6 +159,18 @@ int main()
         //call text
         loadText(font);
 
+        //crystal
+        loadcrystal();
+        for(int i=0;i<6;i++){
+            Pcryst[i].setTexture(Pcrystal[i]);
+            Pcryst[i].setScale(0.05f,0.05f);
+            Pcryst[i].setPosition(950+(40*i),560);
+
+            Bcryst[i].setTexture(Bcrystal[i]);
+            Bcryst[i].setScale(0.05f,0.05f);
+            Bcryst[i].setPosition(10+(40*i),10);
+        }
+
         //Rune Check
         LevelUp();
 
@@ -179,6 +196,12 @@ int main()
         window.draw(Batk);         //write current atk
         window.draw(Bdef);         //write current def
         window.draw(Brune);        //write current rune
+
+        //show crystal
+        for(int i=0;i<6;i++){
+            window.draw(Pcryst[i]);
+            window.draw(Bcryst[i]);
+        }
 
         window.display();
     }
@@ -845,4 +868,43 @@ void restart(){
     Pburncount = 0; Bburncount = 0;
     PCAcount = 0; BCAcount = 0;
     Pillucount = 0; Billucount = 0;
+}
+
+void loadcrystal(){
+
+    //stun
+    if(PlayerStun) Pcrystal[0].loadFromFile("ui/stun.png");
+    else Pcrystal[0].loadFromFile("ui/none.png");
+    if(BotStun) Bcrystal[0].loadFromFile("ui/stun.png");
+    else Bcrystal[0].loadFromFile("ui/none.png");
+
+    //burn
+    if(PlayerBurn) Pcrystal[1].loadFromFile("ui/burn.png");
+    else Pcrystal[1].loadFromFile("ui/none.png");
+    if(BotBurn) Bcrystal[1].loadFromFile("ui/burn.png");
+    else Bcrystal[1].loadFromFile("ui/none.png");
+
+    //poison
+    if(PlayerPoison) Pcrystal[2].loadFromFile("ui/poison.png");
+    else Pcrystal[2].loadFromFile("ui/none.png");
+    if(BotPoison) Bcrystal[2].loadFromFile("ui/poison.png");
+    else Bcrystal[2].loadFromFile("ui/none.png");
+
+    //illuminate
+    if(PlayerIllu) Pcrystal[3].loadFromFile("ui/Illuminate.png");
+    else Pcrystal[3].loadFromFile("ui/none.png");
+    if(BotIllu) Bcrystal[3].loadFromFile("ui/Illuminate.png");
+    else Bcrystal[3].loadFromFile("ui/none.png");
+
+    //undying
+    if(PlayerUndying) Pcrystal[4].loadFromFile("ui/undying.png");
+    else Pcrystal[4].loadFromFile("ui/none.png");
+    if(BotUndying) Bcrystal[4].loadFromFile("ui/undying.png");
+    else Bcrystal[4].loadFromFile("ui/none.png");
+
+    //CA
+    if(PlayerCA) Pcrystal[5].loadFromFile("ui/CA.png");
+    else Pcrystal[5].loadFromFile("ui/none.png");
+    if(BotCA) Bcrystal[5].loadFromFile("ui/CA.png");
+    else Bcrystal[5].loadFromFile("ui/none.png");
 }
