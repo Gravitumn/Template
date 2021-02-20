@@ -459,10 +459,8 @@ void cardUse(bool Isplayer)
                 botAtk += 1;
         }
     }
-
     else if (card >= 13 && card <= 18) //holy light #3
         Healing(12, Isplayer);
-
     else if (card >= 19 && card <= 24) //Illuminate #4
     {
         if (Isplayer)
@@ -476,7 +474,6 @@ void cardUse(bool Isplayer)
             Billucount = 3;
         }
     }
-
     else if (card >= 25 && card <= 30) //flamethrower #5
     {
         damageCalculate(3, Isplayer);
@@ -491,13 +488,11 @@ void cardUse(bool Isplayer)
             Pburncount = 3;
         }
     }
-
     else if (card >= 31 && card <= 36) //smash!!! #6
     {
         damageCalculate(15, Isplayer);
         damageCalculate(5, !Isplayer);
     }
-
     else if (card >= 37 && card <= 42) //trickster #7
     {
         damageCalculate(3, Isplayer);
@@ -512,7 +507,6 @@ void cardUse(bool Isplayer)
             Ppoisoncount = 5;
         }
     }
-
     else if (card >= 43 && card <= 48) //Arc #8
     {
         damageCalculate(3, Isplayer);
@@ -525,7 +519,6 @@ void cardUse(bool Isplayer)
             PrawStun = true;
         }
     }
-
     else if (card >= 49 && card <= 51) //gracial prison #9*
     {
         if (Isplayer == true)
@@ -539,81 +532,15 @@ void cardUse(bool Isplayer)
             PrawStun = true;
         }
     }
-
-    else if (card >= 61 && card <= 63) //demonic course #12*
-    {
-        if (Isplayer == true)
-        {
-            botDEF = botDEF - 10;
-            playerDEF = playerDEF + 10;
-        }
-        else
-        {
-            playerDEF = playerDEF - 10;
-            botDEF = botDEF + 10;
-        }
-    }
-    else if (card >= 67 && card <= 69) //rho aias #14*
-    {
-        if (Isplayer == true)
-        {
-            playerDEF = playerDEF + 15;
-        }
-        else
-        {
-            botDEF = botDEF + 15;
-        }
-    }
-    else if (card >= 73 && card <= 75) //Colossal Assault #16
-    {
-        if (Isplayer == true)
-        {
-            PlayerCA = true;
-            PCAcount = 2;
-        }
-        else
-        {
-            BotCA = true;
-            BCAcount = 2;
-        }
-    }
-    else if (card >= 82 && card <= 87) //blood thirster #19*
+    else if (card >= 52 && card <= 57) //rune power #10
     {
         if (Isplayer)
         {
-            damageCalculate(6, Isplayer);
-            Healing(6, Isplayer);
+            playerRune += 20;
         }
         else
         {
-            damageCalculate(6, !Isplayer);
-            Healing(6, !Isplayer);
-        }
-    }
-    else if (card >= 95 && card <= 96) //sigil of power #23*
-    {
-        if (Isplayer)
-        {
-            damageCalculate(10, Isplayer);
-            PlayerLevel++;
-        }
-        else
-        {
-            damageCalculate(10, !Isplayer);
-            BotLevel++;
-        }
-    }
-    else if (card >= 99 && card <= 100) //chibaku tensei #25*
-    {
-        if (Isplayer)
-        {
-            damageCalculate(20, Isplayer);
-            BrawStun = true;
-        }
-        else
-        {
-            damageCalculate(20, !Isplayer);
-            PrawStun = true;
+            BotRune += 20;
         }
     }
     else if (card >= 58 && card <= 60) //abyssal power #11
@@ -629,15 +556,110 @@ void cardUse(bool Isplayer)
             botHP -= 15;
         }
     }
-    else if (card >= 52 && card <= 57) //rune power #10
+    else if (card >= 61 && card <= 63) //demonic course #12*
     {
-        if (Isplayer)
+        if (Isplayer == true)
         {
-            playerRune += 20;
+            botDEF = botDEF - 10;
+            playerDEF = playerDEF + 10;
         }
         else
         {
-            BotRune += 20;
+            playerDEF = playerDEF - 10;
+            botDEF = botDEF + 10;
+        }
+    }
+    else if (card >= 64 && card <= 66) //full counter #13
+    {
+    }
+    else if (card >= 67 && card <= 69) //rho aias #14*
+    {
+        if (Isplayer == true)
+        {
+            playerDEF = playerDEF + 15;
+        }
+        else
+        {
+            botDEF = botDEF + 15;
+        }
+    }
+    else if (card >= 70 && card <= 72) //lamb's respite #15    //not done
+    {
+        if (Isplayer)
+        {
+        }
+        else
+        {
+        }
+    }
+    else if (card >= 73 && card <= 75) //Colossal Assault #16
+    {
+        if (Isplayer == true)
+        {
+            PlayerCA = true;
+            PCAcount = 2;
+        }
+        else
+        {
+            BotCA = true;
+            BCAcount = 2;
+        }
+    }
+    else if (card >= 76 && card <= 78) //explosive trap #17
+    {
+    }
+    else if (card >= 79 && card <= 81) //armor tiran #18
+    {
+    }
+    else if (card >= 82 && card <= 87) //blood thirster #19*
+    {
+        if (Isplayer)
+        {
+            damageCalculate(6, Isplayer);
+            Healing(6, Isplayer);
+        }
+        else
+        {
+            damageCalculate(6, !Isplayer);
+            Healing(6, !Isplayer);
+        }
+    }
+    else if (card >= 88 && card <= 90) //trace on! #20
+    {
+    }
+    else if (card >= 91 && card <= 92) //undying rage #21
+    {
+    }
+    else if (card >= 93 && card <= 94) //berserker soul #22
+    {
+    }
+    else if (card >= 95 && card <= 96) //sigil of power #23*
+    {
+        if (Isplayer)
+        {
+            damageCalculate(10, Isplayer);
+            PlayerLevel++;
+        }
+        else
+        {
+            damageCalculate(10, !Isplayer);
+            BotLevel++;
+        }
+    }
+    else if (card >= 97 && card <= 98) //destiny draw #24
+    {
+    }
+    else if (card >= 99 && card <= 100) //chibaku tensei #25*
+    {
+        if (Isplayer)
+        {
+            damageCalculate(20, Isplayer);
+            BrawStun = true;
+        }
+        else
+        {
+            damageCalculate(20, !Isplayer);
+            PrawStun = true;
         }
     }
 
