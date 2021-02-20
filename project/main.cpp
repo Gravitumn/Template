@@ -10,6 +10,7 @@ int botHP = 80, bselectcard, botDEF = 0, botAtk = 0, BotRune, BotLevel = 0;     
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
+bool botwin = false,playerwin = false,withdraw = false;
 bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun;
 bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount;
@@ -17,8 +18,8 @@ int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
-Texture CurrentPlayerHand[5];
-Texture CurrentBotHand[5];
+Texture CurrentPlayerHand[5],Pcrystal[6];
+Texture CurrentBotHand[5],Bcrystal[6];
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
 void drawCard();
@@ -34,6 +35,9 @@ void LevelUp();
 void endphase();
 void debuffUse();
 void turnCount();
+void wincondition();
+void restart();
+void loadcrystal();
 
 int main()
 {
@@ -45,6 +49,10 @@ int main()
     backgroundImage.loadFromFile("cardImage/bg.jpg");
     bg.setTexture(backgroundImage);
     bg.setScale(1.7f, 1.85f);
+
+    //crystal
+    Sprite Pcryst[6];
+    Sprite Bcryst[6];
 
     //card Sprites
     Sprite playerCard[5];
@@ -79,80 +87,47 @@ int main()
         {
             if (event.type == Event::Closed)
                 window.close();
-
-            //turn end simulation
-            pcardselect(Positionxpcard, Positionypcard);
-            if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
-            {
-                keytime = 0;
-                if (botshow == true)
+            if(botwin == false && playerwin == false && withdraw == false){
+                    
+                //turn end simulation
+                pcardselect(Positionxpcard, Positionypcard);
+                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
                 {
-                    for (int i = 0; i < 5; i++)
+                    keytime = 0;
+                    if (botshow == true)
                     {
-                        Positionxpcard[i] = 180 * i;
-                        Positionypcard[i] = window.getSize().y - 250.f;
-                        Positionxbcard[i] = window.getSize().x - 180 - (180 * i);
-                        Positionybcard[i] = 0;
-                        botshow = false;
-                        effectphase(PlayerStart);
-                        playerHand[pselectcard] = 0;
-                        BotHand[bselectcard] = 0;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            Positionxpcard[i] = 180 * i;
+                            Positionypcard[i] = window.getSize().y - 250.f;
+                            Positionxbcard[i] = window.getSize().x - 180 - (180 * i);
+                            Positionybcard[i] = 0;
+                            botshow = false;
+                            effectphase(PlayerStart);
+                            playerHand[pselectcard] = 0;
+                            BotHand[bselectcard] = 0;
+                        }
                     }
+                    else
+                    {
+                        botshow = true;
+                    }
+                    
+
+
+                    //endphase condition
+                    if (End)endphase();
+
+                    if (End == true)
+                        End = false;
+                    else
+                        End = true;
                 }
-                else
-                {
-                    botshow = true;
+            }
+            else if(botwin == true || playerwin == true || withdraw == true){
+                if(Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10){
+                    restart();
                 }
-
-                if (End)
-                    endphase();
-
-                if (End == true)
-                    End = false;
-                else
-                    End = true;
-            }
-
-            //status simulation
-            if (Keyboard::isKeyPressed(Keyboard::S) && keytime >= 10)
-            {
-                keytime = 0;
-                playerHP -= 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::D) && keytime >= 10)
-            {
-                keytime = 0;
-                botHP -= 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::F) && keytime >= 10)
-            {
-                keytime = 0;
-                playerATK += 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::G) && keytime >= 10)
-            {
-                keytime = 0;
-                botAtk += 1;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::Q) && keytime >= 10)
-            {
-                keytime = 0;
-                PlayerStun = true;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::W) && keytime >= 10)
-            {
-                keytime = 0;
-                playerRune += 10;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::E) && keytime >= 10)
-            {
-                keytime = 0;
-                playerDEF += 5;
-            }
-            if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10)
-            {
-                keytime = 0;
-                BotUndying = true;
             }
         }
 
@@ -184,6 +159,18 @@ int main()
         //call text
         loadText(font);
 
+        //crystal
+        loadcrystal();
+        for(int i=0;i<6;i++){
+            Pcryst[i].setTexture(Pcrystal[i]);
+            Pcryst[i].setScale(0.05f,0.05f);
+            Pcryst[i].setPosition(950+(40*i),560);
+
+            Bcryst[i].setTexture(Bcrystal[i]);
+            Bcryst[i].setScale(0.05f,0.05f);
+            Bcryst[i].setPosition(10+(40*i),10);
+        }
+
         //Rune Check
         LevelUp();
 
@@ -209,6 +196,12 @@ int main()
         window.draw(Batk);         //write current atk
         window.draw(Bdef);         //write current def
         window.draw(Brune);        //write current rune
+
+        //show crystal
+        for(int i=0;i<6;i++){
+            window.draw(Pcryst[i]);
+            window.draw(Bcryst[i]);
+        }
 
         window.display();
     }
@@ -410,17 +403,30 @@ void effectphase(bool PlayerStart)
     if (PlayerStart == true)
     {
         if (!PlayerStun)
+        {
             cardUse(true);
+            wincondition();
+        }
         if (!BotStun)
+        {
             cardUse(false);
+            wincondition();
+        }
     }
     else
     {
         if (!BotStun)
+        {
             cardUse(false);
+            wincondition();
+        }
         if (!PlayerStun)
+        {
             cardUse(true);
+            wincondition();
+        }
     }
+    
 }
 
 void cardUse(bool Isplayer)
@@ -652,12 +658,12 @@ void cardUse(bool Isplayer)
         if (Isplayer)
         {
             damageCalculate(10, Isplayer);
-            PlayerLevel++;
+            playerRune += PlayerMaxRune;
         }
         else
         {
             damageCalculate(10, !Isplayer);
-            BotLevel++;
+            BotRune += BotMaxRune;
         }
     }
     else if (card >= 97 && card <= 98) //destiny draw #24
@@ -722,9 +728,6 @@ void damageCalculate(int damage, bool Isplayer)
         }
     }
 }
-void LevelDown()
-{
-}
 void LevelUp()
 {
     if (playerRune >= PlayerMaxRune)
@@ -745,7 +748,9 @@ void LevelUp()
 void endphase()
 {
     debuffUse();
+    wincondition();
     turnCount();
+    
 }
 
 void debuffUse()
@@ -837,4 +842,69 @@ void turnCount()
         BrawStun = false;
         BotStun = true;
     }
+}
+
+void wincondition(){
+    if(playerHP <= 0 && botHP <=0)withdraw = true;
+    else if(playerHP <= 0)botwin = true;
+    else if(botHP <= 0) playerwin = true;
+}
+
+void restart(){
+    for(int i=0;i<5;i++)playerHand[i] = 0;
+    for(int i=0;i<5;i++)BotHand[i] = 0;
+    playerHP = 80; botHP = 80;
+    playerATK = 0; botAtk = 0;
+    playerDEF = 0; botDEF = 0;
+    playerRune = 0; BotRune = 0;
+    BotLevel = 0; PlayerLevel =0;
+    PlayerStun = false; BotStun = false;
+    PlayerPoison = false; BotPoison = false;
+    PlayerBurn = false; BotBurn = false;
+    PlayerIllu = false; BotIllu = false;
+    PlayerUndying = false; BotUndying = false;
+    PrawStun = false; BrawStun = false;
+    Ppoisoncount = 0; Bpoisoncount = 0;
+    Pburncount = 0; Bburncount = 0;
+    PCAcount = 0; BCAcount = 0;
+    Pillucount = 0; Billucount = 0;
+}
+
+void loadcrystal(){
+
+    //stun
+    if(PlayerStun) Pcrystal[0].loadFromFile("ui/stun.png");
+    else Pcrystal[0].loadFromFile("ui/none.png");
+    if(BotStun) Bcrystal[0].loadFromFile("ui/stun.png");
+    else Bcrystal[0].loadFromFile("ui/none.png");
+
+    //burn
+    if(PlayerBurn) Pcrystal[1].loadFromFile("ui/burn.png");
+    else Pcrystal[1].loadFromFile("ui/none.png");
+    if(BotBurn) Bcrystal[1].loadFromFile("ui/burn.png");
+    else Bcrystal[1].loadFromFile("ui/none.png");
+
+    //poison
+    if(PlayerPoison) Pcrystal[2].loadFromFile("ui/poison.png");
+    else Pcrystal[2].loadFromFile("ui/none.png");
+    if(BotPoison) Bcrystal[2].loadFromFile("ui/poison.png");
+    else Bcrystal[2].loadFromFile("ui/none.png");
+
+    //illuminate
+    if(PlayerIllu) Pcrystal[3].loadFromFile("ui/Illuminate.png");
+    else Pcrystal[3].loadFromFile("ui/none.png");
+    if(BotIllu) Bcrystal[3].loadFromFile("ui/Illuminate.png");
+    else Bcrystal[3].loadFromFile("ui/none.png");
+
+    //undying
+    if(PlayerUndying) Pcrystal[4].loadFromFile("ui/undying.png");
+    else Pcrystal[4].loadFromFile("ui/none.png");
+    if(BotUndying) Bcrystal[4].loadFromFile("ui/undying.png");
+    else Bcrystal[4].loadFromFile("ui/none.png");
+
+    //CA
+    if(PlayerCA) Pcrystal[5].loadFromFile("ui/CA.png");
+    else Pcrystal[5].loadFromFile("ui/none.png");
+    if(BotCA) Bcrystal[5].loadFromFile("ui/CA.png");
+    else Bcrystal[5].loadFromFile("ui/none.png");
 }
