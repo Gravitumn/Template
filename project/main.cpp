@@ -727,17 +727,18 @@ void LevelDown()
 }
 void LevelUp()
 {
-    if (playerRune == PlayerMaxRune)
+    if (playerRune >= PlayerMaxRune)
     {
+        playerRune = playerRune - PlayerMaxRune;
         PlayerLevel++;
         playerATK += 5;
-        playerRune = 0;
+        
     }
-    if (BotMaxRune == BotRune)
+    if (BotRune >= BotMaxRune)
     {
+        BotRune = BotRune - BotMaxRune;
         BotLevel++;
         botAtk += 5;
-        BotRune = 0;
     }
 }
 
