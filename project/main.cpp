@@ -6,11 +6,11 @@ using namespace sf;
 int playerHand[5] = {0, 0, 0, 0, 0};
 int BotHand[5] = {0, 0, 0, 0, 0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0; //player status
-int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0 , botAtk = 0, BotRune, BotLevel = 0;                    // bot status
+int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
-bool botwin = false,playerwin = false,withdraw = false;
+bool botwin = false, playerwin = false, withdraw = false;
 bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF;
 bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount, PTempDEFcount;
@@ -18,8 +18,8 @@ int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount, BTempDEFcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
-Texture CurrentPlayerHand[5],Pcrystal[6];
-Texture CurrentBotHand[5],Bcrystal[6];
+Texture CurrentPlayerHand[5], Pcrystal[6];
+Texture CurrentBotHand[5], Bcrystal[6];
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
 void drawCard();
@@ -87,8 +87,9 @@ int main()
         {
             if (event.type == Event::Closed)
                 window.close();
-            if(botwin == false && playerwin == false && withdraw == false){
-                    
+            if (botwin == false && playerwin == false && withdraw == false)
+            {
+
                 //turn end simulation
                 pcardselect(Positionxpcard, Positionypcard);
                 if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
@@ -112,11 +113,10 @@ int main()
                     {
                         botshow = true;
                     }
-                    
-
 
                     //endphase condition
-                    if (End)endphase();
+                    if (End)
+                        endphase();
 
                     if (End == true)
                         End = false;
@@ -124,8 +124,10 @@ int main()
                         End = true;
                 }
             }
-            else if(botwin == true || playerwin == true || withdraw == true){
-                if(Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10){
+            else if (botwin == true || playerwin == true || withdraw == true)
+            {
+                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10)
+                {
                     restart();
                 }
             }
@@ -161,14 +163,15 @@ int main()
 
         //crystal
         loadcrystal();
-        for(int i=0;i<6;i++){
+        for (int i = 0; i < 6; i++)
+        {
             Pcryst[i].setTexture(Pcrystal[i]);
-            Pcryst[i].setScale(0.05f,0.05f);
-            Pcryst[i].setPosition(950+(40*i),560);
+            Pcryst[i].setScale(0.05f, 0.05f);
+            Pcryst[i].setPosition(950 + (40 * i), 560);
 
             Bcryst[i].setTexture(Bcrystal[i]);
-            Bcryst[i].setScale(0.05f,0.05f);
-            Bcryst[i].setPosition(10+(40*i),10);
+            Bcryst[i].setScale(0.05f, 0.05f);
+            Bcryst[i].setPosition(10 + (40 * i), 10);
         }
 
         //Rune Check
@@ -198,7 +201,8 @@ int main()
         window.draw(Brune);        //write current rune
 
         //show crystal
-        for(int i=0;i<6;i++){
+        for (int i = 0; i < 6; i++)
+        {
             window.draw(Pcryst[i]);
             window.draw(Bcryst[i]);
         }
@@ -426,7 +430,6 @@ void effectphase(bool PlayerStart)
             wincondition();
         }
     }
-    
 }
 
 void cardUse(bool Isplayer)
@@ -566,27 +569,29 @@ void cardUse(bool Isplayer)
     {
         if (Isplayer == true)
         {
-            if (botDEF - 10 >= 0){
+            if (botDEF - 10 >= 0)
+            {
                 botDEF = botDEF - 10;
                 playerDEF = playerDEF + 10;
             }
-            else{
+            else
+            {
                 playerDEF += botDEF;
                 botDEF = 0;
             }
-            
         }
         else
         {
-            if (playerDEF - 10 >= 0){
+            if (playerDEF - 10 >= 0)
+            {
                 playerDEF = playerDEF - 10;
                 botDEF = botDEF + 10;
             }
-            else{
+            else
+            {
                 botDEF += playerDEF;
                 playerDEF = 0;
             }
-            
         }
     }
     else if (card >= 64 && card <= 66) //full counter #13
@@ -630,11 +635,13 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 79 && card <= 81) //armor tiran #18  *WIP. If there is anything to add, please call me. - Art
     {
-        if(Isplayer){
+        if (Isplayer)
+        {
             PTempDEF = true;
             PTempDEFcount = 3;
         }
-        else{
+        else
+        {
             BTempDEF = true;
             BTempDEFcount = 3;
         }
@@ -702,10 +709,11 @@ void damageCalculate(int damage, bool Isplayer)
         if (PlayerCA)
             damage *= 2;
         totaldamage = damage + playerATK;
-        if (BTempDEF) botTempDEF = 5;       //used with collosal titan - Art
+        if (BTempDEF)
+            botTempDEF = 5; //used with collosal titan - Art
         if (totaldamage < 0)
             totaldamage = 0;
-        if (botTempDEF >= totaldamage)      //used with collosal titan - Art
+        if (botTempDEF >= totaldamage) //used with collosal titan - Art
         {
             botTempDEF -= totaldamage;
             totaldamage = 0;
@@ -732,20 +740,24 @@ void damageCalculate(int damage, bool Isplayer)
         if (BotCA)
             damage *= 2;
         totaldamage = damage + botAtk;
-        if (PTempDEF) playerTempDEF = 5;    //used with collosal titan - Art
+        if (PTempDEF)
+            playerTempDEF = 5; //used with collosal titan - Art
         if (totaldamage < 0)
             totaldamage = 0;
-        if (PTempDEF > totaldamage){        //used with collosal titan - Art
+        if (PTempDEF > totaldamage)
+        { //used with collosal titan - Art
             PTempDEF -= totaldamage;
             totaldamage = 0;
         }
-        else{
+        else
+        {
             totaldamage -= playerTempDEF;
             playerTempDEF = 0;
         }
-        if (playerDEF >= totaldamage){
+        if (playerDEF >= totaldamage)
+        {
             playerDEF -= totaldamage;
-        }  
+        }
         else
         {
             if (PlayerUndying == true && playerHP - totaldamage <= 0)
@@ -764,7 +776,6 @@ void LevelUp()
         playerRune = playerRune - PlayerMaxRune;
         PlayerLevel++;
         playerATK += 5;
-        
     }
     if (BotRune >= BotMaxRune)
     {
@@ -779,7 +790,6 @@ void endphase()
     debuffUse();
     wincondition();
     turnCount();
-    
 }
 
 void debuffUse()
@@ -877,78 +887,128 @@ void turnCount()
         BotStun = true;
     }
 
-    if (PTempDEFcount == 0){
+    if (PTempDEFcount == 0)
+    {
         PTempDEF = false;
         playerTempDEF = 0;
-    }  
-    if (BTempDEFcount == 0){
+    }
+    if (BTempDEFcount == 0)
+    {
         BTempDEF = false;
         botTempDEF = 0;
     }
-        
 }
 
-void wincondition(){
-    if(playerHP <= 0 && botHP <=0)withdraw = true;
-    else if(playerHP <= 0)botwin = true;
-    else if(botHP <= 0) playerwin = true;
+void wincondition()
+{
+    if (playerHP <= 0 && botHP <= 0)
+        withdraw = true;
+    else if (playerHP <= 0)
+        botwin = true;
+    else if (botHP <= 0)
+        playerwin = true;
 }
 
-void restart(){
-    for(int i=0;i<5;i++)playerHand[i] = 0;
-    for(int i=0;i<5;i++)BotHand[i] = 0;
-    playerHP = 80; botHP = 80;
-    playerATK = 0; botAtk = 0;
-    playerDEF = 0; botDEF = 0;
-    playerRune = 0; BotRune = 0;
-    BotLevel = 0; PlayerLevel =0;
-    PlayerStun = false; BotStun = false;
-    PlayerPoison = false; BotPoison = false;
-    PlayerBurn = false; BotBurn = false;
-    PlayerIllu = false; BotIllu = false;
-    PlayerUndying = false; BotUndying = false;
-    PrawStun = false; BrawStun = false;
-    Ppoisoncount = 0; Bpoisoncount = 0;
-    Pburncount = 0; Bburncount = 0;
-    PCAcount = 0; BCAcount = 0;
-    Pillucount = 0; Billucount = 0;
+void restart()
+{
+    for (int i = 0; i < 5; i++)
+        playerHand[i] = 0;
+    for (int i = 0; i < 5; i++)
+        BotHand[i] = 0;
+    playerHP = 80;
+    botHP = 80;
+    playerATK = 0;
+    botAtk = 0;
+    playerDEF = 0;
+    botDEF = 0;
+    playerRune = 0;
+    BotRune = 0;
+    BotLevel = 0;
+    PlayerLevel = 0;
+    PlayerStun = false;
+    BotStun = false;
+    PlayerPoison = false;
+    BotPoison = false;
+    PlayerBurn = false;
+    BotBurn = false;
+    PlayerIllu = false;
+    BotIllu = false;
+    PlayerUndying = false;
+    BotUndying = false;
+    PrawStun = false;
+    BrawStun = false;
+    Ppoisoncount = 0;
+    Bpoisoncount = 0;
+    Pburncount = 0;
+    Bburncount = 0;
+    PCAcount = 0;
+    BCAcount = 0;
+    Pillucount = 0;
+    Billucount = 0;
 }
 
-void loadcrystal(){
+void loadcrystal()
+{
 
     //stun
-    if(PlayerStun) Pcrystal[0].loadFromFile("ui/stun.png");
-    else Pcrystal[0].loadFromFile("ui/none.png");
-    if(BotStun) Bcrystal[0].loadFromFile("ui/stun.png");
-    else Bcrystal[0].loadFromFile("ui/none.png");
+    if (PlayerStun)
+        Pcrystal[0].loadFromFile("ui/stun.png");
+    else
+        Pcrystal[0].loadFromFile("ui/none.png");
+    if (BotStun)
+        Bcrystal[0].loadFromFile("ui/stun.png");
+    else
+        Bcrystal[0].loadFromFile("ui/none.png");
 
     //burn
-    if(PlayerBurn) Pcrystal[1].loadFromFile("ui/burn.png");
-    else Pcrystal[1].loadFromFile("ui/none.png");
-    if(BotBurn) Bcrystal[1].loadFromFile("ui/burn.png");
-    else Bcrystal[1].loadFromFile("ui/none.png");
+    if (PlayerBurn)
+        Pcrystal[1].loadFromFile("ui/burn.png");
+    else
+        Pcrystal[1].loadFromFile("ui/none.png");
+    if (BotBurn)
+        Bcrystal[1].loadFromFile("ui/burn.png");
+    else
+        Bcrystal[1].loadFromFile("ui/none.png");
 
     //poison
-    if(PlayerPoison) Pcrystal[2].loadFromFile("ui/poison.png");
-    else Pcrystal[2].loadFromFile("ui/none.png");
-    if(BotPoison) Bcrystal[2].loadFromFile("ui/poison.png");
-    else Bcrystal[2].loadFromFile("ui/none.png");
+    if (PlayerPoison)
+        Pcrystal[2].loadFromFile("ui/poison.png");
+    else
+        Pcrystal[2].loadFromFile("ui/none.png");
+    if (BotPoison)
+        Bcrystal[2].loadFromFile("ui/poison.png");
+    else
+        Bcrystal[2].loadFromFile("ui/none.png");
 
     //illuminate
-    if(PlayerIllu) Pcrystal[3].loadFromFile("ui/Illuminate.png");
-    else Pcrystal[3].loadFromFile("ui/none.png");
-    if(BotIllu) Bcrystal[3].loadFromFile("ui/Illuminate.png");
-    else Bcrystal[3].loadFromFile("ui/none.png");
+    if (PlayerIllu)
+        Pcrystal[3].loadFromFile("ui/Illuminate.png");
+    else
+        Pcrystal[3].loadFromFile("ui/none.png");
+    if (BotIllu)
+        Bcrystal[3].loadFromFile("ui/Illuminate.png");
+    else
+        Bcrystal[3].loadFromFile("ui/none.png");
 
     //undying
-    if(PlayerUndying) Pcrystal[4].loadFromFile("ui/undying.png");
-    else Pcrystal[4].loadFromFile("ui/none.png");
-    if(BotUndying) Bcrystal[4].loadFromFile("ui/undying.png");
-    else Bcrystal[4].loadFromFile("ui/none.png");
+    if (PlayerUndying)
+        Pcrystal[4].loadFromFile("ui/undying.png");
+    else
+        Pcrystal[4].loadFromFile("ui/none.png");
+    if (BotUndying)
+        Bcrystal[4].loadFromFile("ui/undying.png");
+    else
+        Bcrystal[4].loadFromFile("ui/none.png");
 
     //CA
-    if(PlayerCA) Pcrystal[5].loadFromFile("ui/CA.png");
-    else Pcrystal[5].loadFromFile("ui/none.png");
-    if(BotCA) Bcrystal[5].loadFromFile("ui/CA.png");
-    else Bcrystal[5].loadFromFile("ui/none.png");
+    if (PlayerCA)
+        Pcrystal[5].loadFromFile("ui/CA.png");
+    else
+        Pcrystal[5].loadFromFile("ui/none.png");
+    if (BotCA)
+        Bcrystal[5].loadFromFile("ui/CA.png");
+    else
+        Bcrystal[5].loadFromFile("ui/none.png");
 }
+
+//sdsdsdsadasfdsfdsfs
