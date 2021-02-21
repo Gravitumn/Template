@@ -9,7 +9,7 @@ int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0,
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
-int keytime = 10;
+int keytime = 2;
 bool botwin = false, playerwin = false, withdraw = false;
 bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF;
 bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF;
@@ -72,7 +72,7 @@ int main()
     {
         PlayerMaxRune = 40 + (PlayerLevel * 20);
         BotMaxRune = 40 + (BotLevel * 20);
-        if (keytime < 10)
+        if (keytime < 2)
             keytime++;
         //screen unwider
         Vector2u screen = Vector2u(1200, 800);
@@ -92,7 +92,7 @@ int main()
 
                 //turn end simulation
                 pcardselect(Positionxpcard, Positionypcard);
-                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
+                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 2 && selected == true)
                 {
                     keytime = 0;
                     if (botshow == true)
@@ -126,7 +126,7 @@ int main()
             }
             else if (botwin == true || playerwin == true || withdraw == true)
             {
-                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10)
+                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 2)
                 {
                     restart();
                 }
@@ -278,7 +278,7 @@ std::string loadCard(int card)
 }
 void pcardselect(float Positionxpcard[], float Positionypcard[])
 {
-    if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 10)
+    if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 2)
     {
         keytime = 0;
         for (int i = 0; i < 5; i++)
