@@ -5,16 +5,16 @@ using namespace sf;
 //global variable
 int playerHand[5] = {0, 0, 0, 0, 0};
 int BotHand[5] = {0, 0, 0, 0, 0};
-int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, PlayerLevel = 0, playerRune = 0; //player status
-int botHP = 80, bselectcard, botDEF = 0, botAtk = 0, BotRune, BotLevel = 0;                    // bot status
+int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0; //player status
+int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0 , botAtk = 0, BotRune, BotLevel = 0;                    // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 10;
 bool botwin = false,playerwin = false,withdraw = false;
-bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun;
-bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun;
-int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount;
-int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount;
+bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF;
+bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF;
+int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount, PTempDEFcount;
+int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount, BTempDEFcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
@@ -628,8 +628,16 @@ void cardUse(bool Isplayer)
     else if (card >= 76 && card <= 78) //explosive trap #17
     {
     }
-    else if (card >= 79 && card <= 81) //armor tiran #18
+    else if (card >= 79 && card <= 81) //armor tiran #18  *WIP. If there is anything to add, please call me. - Art
     {
+        if(Isplayer){
+            PTempDEF = true;
+            PTempDEFcount = 3;
+        }
+        else{
+            BTempDEF = true;
+            BTempDEFcount = 3;
+        }
     }
     else if (card >= 82 && card <= 87) //blood thirster #19*
     {
@@ -694,8 +702,19 @@ void damageCalculate(int damage, bool Isplayer)
         if (PlayerCA)
             damage *= 2;
         totaldamage = damage + playerATK;
+        if (BTempDEF) botTempDEF = 5;       //used with collosal titan - Art
         if (totaldamage < 0)
             totaldamage = 0;
+        if (botTempDEF >= totaldamage)      //used with collosal titan - Art
+        {
+            botTempDEF -= totaldamage;
+            totaldamage = 0;
+        }
+        else
+        {
+            totaldamage -= playerTempDEF;
+            botTempDEF = 0;
+        }
         if (botDEF >= totaldamage)
             botDEF -= totaldamage;
         else
@@ -713,10 +732,20 @@ void damageCalculate(int damage, bool Isplayer)
         if (BotCA)
             damage *= 2;
         totaldamage = damage + botAtk;
+        if (PTempDEF) playerTempDEF = 5;    //used with collosal titan - Art
         if (totaldamage < 0)
             totaldamage = 0;
-        if (playerDEF >= totaldamage)
+        if (PTempDEF > totaldamage){        //used with collosal titan - Art
+            PTempDEF -= totaldamage;
+            totaldamage = 0;
+        }
+        else{
+            totaldamage -= playerTempDEF;
+            playerTempDEF = 0;
+        }
+        if (playerDEF >= totaldamage){
             playerDEF -= totaldamage;
+        }  
         else
         {
             if (PlayerUndying == true && playerHP - totaldamage <= 0)
@@ -803,6 +832,11 @@ void turnCount()
     if (BCAcount > 0)
         BCAcount -= 1;
 
+    if (PTempDEFcount > 0)
+        PTempDEFcount -= 1;
+    if (BTempDEFcount > 0)
+        BTempDEFcount -= 1;
+
     //checking
     if (Ppoisoncount == 0)
         PlayerPoison = false;
@@ -842,6 +876,16 @@ void turnCount()
         BrawStun = false;
         BotStun = true;
     }
+
+    if (PTempDEFcount == 0){
+        PTempDEF = false;
+        playerTempDEF = 0;
+    }  
+    if (BTempDEFcount == 0){
+        BTempDEF = false;
+        botTempDEF = 0;
+    }
+        
 }
 
 void wincondition(){
