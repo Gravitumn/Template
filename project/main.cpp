@@ -3,10 +3,10 @@
 using namespace sf;
 
 //global variable
-int playerHand[5] = {66, 66, 66, 66, 66};
-int BotHand[5] = {1, 1, 1, 1, 1};
-int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0; //player status
-int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0;                       // bot status
+int playerHand[5] = {88, 88, 88, 88, 88};
+int BotHand[5] = {65, 65, 65, 65, 65};
+int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
+int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 2;
@@ -133,6 +133,18 @@ int main()
                 }
             }
         }
+
+        //colossal titan detect
+        if (BTempDEF)
+            botTempDEF = 5; //used with collosal titan - Art
+        if (PTempDEF)
+            playerTempDEF = 5; //used with collosal titan - Art
+
+        //undying detect
+        if (PlayerUndying)
+            PundyATK = 10;
+        if (BotUndying)
+            BundyATK = 10;
 
         //Current Hand//
         drawCard();
@@ -360,7 +372,7 @@ void loadText(Font &font)
     Patk.setFillColor(Color::Black);
     Patk.setFont(font);
     Patk.setPosition(1000, 650);
-    atk = "ATK : " + IntToString(playerATK);
+    atk = "ATK : " + IntToString(playerATK + PundyATK);
     Patk.setString(atk);
 
     //player def//
@@ -368,7 +380,7 @@ void loadText(Font &font)
     Pdef.setFillColor(Color::Black);
     Pdef.setFont(font);
     Pdef.setPosition(1000, 700);
-    def = "DEF : " + IntToString(playerDEF);
+    def = "DEF : " + IntToString(playerDEF + playerTempDEF);
     Pdef.setString(def);
 
     //player rune//
@@ -392,7 +404,7 @@ void loadText(Font &font)
     Batk.setFillColor(Color::Black);
     Batk.setFont(font);
     Batk.setPosition(80, 100);
-    atk = "ATK : " + IntToString(botAtk);
+    atk = "ATK : " + IntToString(botAtk + BundyATK);
     Batk.setString(atk);
 
     //bot def//
@@ -400,7 +412,7 @@ void loadText(Font &font)
     Bdef.setFillColor(Color::Black);
     Bdef.setFont(font);
     Bdef.setPosition(80, 150);
-    def = "DEF : " + IntToString(botDEF);
+    def = "DEF : " + IntToString(botDEF + botTempDEF);
     Bdef.setString(def);
 
     //bot rune//
@@ -431,32 +443,9 @@ void Healing(int heal, bool Isplayer)
 
 void effectphase(bool PlayerStart)
 {
-    if (PlayerStart == true)
-    {
-        if (!PlayerStun && !pfc)
-        {
-            cardUse(true);
-            wincondition();
-        }
-        if (!BotStun&& !bfc)
-        {
-            cardUse(false);
-            wincondition();
-        }
-    }
-    else
-    {
-        if (!BotStun)
-        {
-            cardUse(false);
-            wincondition();
-        }
-        if (!PlayerStun)
-        {
-            cardUse(true);
-            wincondition();
-        }
-    }
+    if(!PlayerStun)cardUse(true);
+    if(!BotStun)cardUse(false);
+    selected = false;
 }
 
 void cardUse(bool Isplayer)
@@ -649,9 +638,36 @@ void cardUse(bool Isplayer)
     {
         if (Isplayer)
         {
+            if (PlayerStun == true)
+            {
+                PlayerStun = false;
+                Ppoisoncount = 0;
+                Pburncount = 0;
+                //play
+            }
+            else
+            {
+
+                PlayerStun = false;
+                Ppoisoncount = 0;
+                Pburncount = 0;
+            }
         }
         else
         {
+            if (BotStun == true)
+            {
+                BotStun = false;
+                Bpoisoncount = 0;
+                Bburncount = 0;
+                //play
+            }
+            else
+            {
+                BotStun = false;
+                Bpoisoncount = 0;
+                Bburncount = 0;
+            }
         }
     }
     else if (card >= 73 && card <= 75) //Colossal Assault #16
@@ -683,25 +699,50 @@ void cardUse(bool Isplayer)
             BTempDEFcount = 3;
         }
     }
-    else if (card >= 82 && card <= 87) //blood thirster #19*
+    else if (card >= 82 && card <= 87) //blood thirster #19
     {
         if (Isplayer)
         {
+            int firstbothp = botHP;
             damageCalculate(6, Isplayer);
-            Healing(6, Isplayer);
+            int dif = firstbothp - botHP;
+            Healing(dif, Isplayer);
         }
         else
         {
+            int playerfirsthp = playerHP;
             damageCalculate(6, !Isplayer);
-            Healing(6, !Isplayer);
+            int dif2 = playerfirsthp - playerHP;
+            Healing(dif2, !Isplayer);
         }
     }
     else if (card >= 88 && card <= 90) //trace on! #20
     {
-
+        if(Isplayer){
+            if(BotHand[bselectcard]<88 || BotHand[bselectcard]>90){ //not trace on
+                playerHand[pselectcard] = BotHand[bselectcard];
+                cardUse(true);
+            }
+        }
+        else{
+            if(playerHand[pselectcard]<88 || playerHand[pselectcard]>90){ //not trace on
+                BotHand[bselectcard] = playerHand[pselectcard];
+                cardUse(false);
+            }
+        }
     }
     else if (card >= 91 && card <= 92) //undying rage #21
     {
+        if (Isplayer)
+        {
+            PlayerUndying = true;
+            Pundycount = 3;
+        }
+        else
+        {
+            BotUndying = true;
+            Bundycount = 3;
+        }
     }
     else if (card >= 93 && card <= 94) //berserker soul #22
     {
@@ -736,7 +777,7 @@ void cardUse(bool Isplayer)
         }
     }
 
-    selected = false;
+    
 }
 
 void damageCalculate(int damage, bool Isplayer)
@@ -747,8 +788,7 @@ void damageCalculate(int damage, bool Isplayer)
         if (PlayerCA)
             damage *= 2;
         totaldamage = damage + playerATK;
-        if (BTempDEF)
-            botTempDEF = 5; //used with collosal titan - Art
+
         if (totaldamage < 0)
             totaldamage = 0;
         if (botTempDEF >= totaldamage) //used with collosal titan - Art
@@ -773,13 +813,13 @@ void damageCalculate(int damage, bool Isplayer)
                 botHP = botHP - totaldamage;
         }
     }
+
     else
     {
         if (BotCA)
             damage *= 2;
         totaldamage = damage + botAtk;
-        if (PTempDEF)
-            playerTempDEF = 5; //used with collosal titan - Art
+
         if (totaldamage < 0)
             totaldamage = 0;
         if (PTempDEF > totaldamage)
@@ -907,9 +947,15 @@ void turnCount()
         BotIllu = false;
 
     if (Pundycount == 0)
+    {
         PlayerUndying = false;
+        PundyATK = 0;
+    }
     if (Bundycount == 0)
+    {
         BotUndying = false;
+        BundyATK = 0;
+    }
 
     if (BCAcount == 0)
         BotCA = false;
@@ -988,9 +1034,15 @@ void restart()
     BCAcount = 0;
     Pillucount = 0;
     Billucount = 0;
-    playerwin= false;
-    botwin= false;
-    withdraw= false;
+    playerwin = false;
+    botwin = false;
+    withdraw = false;
+    PTempDEF = false;
+    BTempDEF = false;
+    PTempDEFcount = 0;
+    BTempDEFcount = 0;
+    PundyATK = 0;
+    BundyATK = 0;
 }
 
 void loadcrystal()
