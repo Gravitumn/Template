@@ -3,8 +3,8 @@
 using namespace sf;
 
 //global variable
-int playerHand[5] = {88, 88, 88, 0, 0};
-int BotHand[5] = {0, 0, 0, 0, 0};
+int playerHand[5] = {88, 88, 88, 88, 88};
+int BotHand[5] = {88, 88, 88, 88, 88};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -682,12 +682,16 @@ void cardUse(bool Isplayer)
     else if (card >= 88 && card <= 90) //trace on! #20
     {
         if(Isplayer){
-            playerHand[pselectcard] = BotHand[bselectcard];
-            cardUse(true);
+            if(BotHand[bselectcard]<88 || BotHand[bselectcard]>90){ //not trace on
+                playerHand[pselectcard] = BotHand[bselectcard];
+                cardUse(true);
+            }
         }
         else{
-            BotHand[bselectcard] = playerHand[pselectcard];
-            cardUse(false);
+            if(playerHand[pselectcard]<88 || playerHand[pselectcard]>90){ //not trace on
+                BotHand[bselectcard] = playerHand[pselectcard];
+                cardUse(false);
+            }
         }
     }
     else if (card >= 91 && card <= 92) //undying rage #21
