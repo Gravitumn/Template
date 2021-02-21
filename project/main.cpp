@@ -3,16 +3,17 @@
 using namespace sf;
 
 //global variable
-int playerHand[5] = {0, 0, 0, 0, 0};
-int BotHand[5] = {0, 0, 0, 0, 0};
+int playerHand[5] = {66, 66, 66, 66, 66};
+int BotHand[5] = {1, 1, 1, 1, 1};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
-int keytime = 10;
+int keytime = 2;
+int card;
 bool botwin = false, playerwin = false, withdraw = false;
-bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF;
-bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF;
+bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc;
+bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount, PTempDEFcount;
 int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount, BTempDEFcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
@@ -72,7 +73,7 @@ int main()
     {
         PlayerMaxRune = 40 + (PlayerLevel * 20);
         BotMaxRune = 40 + (BotLevel * 20);
-        if (keytime < 10)
+        if (keytime < 4)
             keytime++;
         //screen unwider
         Vector2u screen = Vector2u(1200, 800);
@@ -92,7 +93,7 @@ int main()
 
                 //turn end simulation
                 pcardselect(Positionxpcard, Positionypcard);
-                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 10 && selected == true)
+                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4 && selected == true)
                 {
                     keytime = 0;
                     if (botshow == true)
@@ -105,7 +106,7 @@ int main()
                             Positionybcard[i] = 0;
                             botshow = false;
                             effectphase(PlayerStart);
-                            playerHand[pselectcard] = 0;
+                            playerHand[pselectcard] = 0;        
                             BotHand[bselectcard] = 0;
                         }
                     }
@@ -126,7 +127,7 @@ int main()
             }
             else if (botwin == true || playerwin == true || withdraw == true)
             {
-                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 10)
+                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 2)
                 {
                     restart();
                 }
@@ -278,7 +279,7 @@ std::string loadCard(int card)
 }
 void pcardselect(float Positionxpcard[], float Positionypcard[])
 {
-    if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 10)
+    if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 4)
     {
         keytime = 0;
         for (int i = 0; i < 5; i++)
@@ -292,14 +293,32 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                     Positionypcard[i] = 300;
                     pselectcard = i;
                     bcardselect(Positionxbcard, Positionybcard);
+                      card = playerHand[pselectcard];
+                    if(card >= 64 && card <= 66){
+                        card = BotHand[bselectcard];
+                        if((card >= 1 && card <= 12) || (card >= 25 && card <= 48) || (card >= 82 && card <= 87) || (card >= 95 && card <= 96) || (card >= 99 && card <= 100))
+                        {
+                            bfc=1;
+                        }  
+                    } 
                 }
                 else if (selected == true && botshow == false)
                 {
+                    if(card >= 64 && card <= 66)
+                    bfc=0;
                     Positionxpcard[i] = 300;
                     Positionypcard[i] = 300;
                     Positionxpcard[pselectcard] = 180 * pselectcard;
                     Positionypcard[pselectcard] = 550.f;
                     pselectcard = i;
+                    card = playerHand[pselectcard];
+                    if(card >= 64 && card <= 66){
+                        card = BotHand[bselectcard];
+                        if((card >= 1 && card <= 12) || (card >= 25 && card <= 48) || (card >= 82 && card <= 87) || (card >= 95 && card <= 96) || (card >= 99 && card <= 100))
+                        {
+                            bfc=1;
+                        }  
+                    }                    
                 }
             }
         }
@@ -313,6 +332,14 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     Positionxbcard[i] = 600;
     Positionybcard[i] = 300;
     bselectcard = i;
+    card = BotHand[bselectcard];
+        if(card >= 64 && card <= 66){
+            card = playerHand[pselectcard];
+            if((card >= 1 && card <= 12) || (card >= 25 && card <= 48) || (card >= 82 && card <= 87) || (card >= 95 && card <= 96) || (card >= 99 && card <= 100))
+            {
+                pfc=1;
+            }  
+        } 
 }
 
 void loadText(Font &font)
@@ -406,12 +433,12 @@ void effectphase(bool PlayerStart)
 {
     if (PlayerStart == true)
     {
-        if (!PlayerStun)
+        if (!PlayerStun && !pfc)
         {
             cardUse(true);
             wincondition();
         }
-        if (!BotStun)
+        if (!BotStun&& !bfc)
         {
             cardUse(false);
             wincondition();
@@ -435,7 +462,6 @@ void effectphase(bool PlayerStart)
 void cardUse(bool Isplayer)
 {
 
-    int card = playerHand[pselectcard];
     if (Isplayer)
         card = playerHand[pselectcard];
     else
@@ -596,6 +622,17 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 64 && card <= 66) //full counter #13
     {
+        if (Isplayer && bfc)
+        {
+           playerHand[pselectcard]=BotHand[bselectcard];
+           cardUse(Isplayer);
+        }
+        else if(!Isplayer && pfc)
+        {
+            BotHand[bselectcard]=playerHand[pselectcard];
+            cardUse(Isplayer);
+        }
+        
     }
     else if (card >= 67 && card <= 69) //rho aias #14*
     {
@@ -661,6 +698,7 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 88 && card <= 90) //trace on! #20
     {
+
     }
     else if (card >= 91 && card <= 92) //undying rage #21
     {
@@ -817,6 +855,11 @@ void debuffUse()
 
 void turnCount()
 {
+    if (pfc > 0)
+        pfc -= 1;
+    if (bfc > 0)
+        bfc -= 1;
+
     if (Ppoisoncount > 0)
         Ppoisoncount -= 1;
     if (Bpoisoncount > 0)
@@ -945,6 +988,9 @@ void restart()
     BCAcount = 0;
     Pillucount = 0;
     Billucount = 0;
+    playerwin= false;
+    botwin= false;
+    withdraw= false;
 }
 
 void loadcrystal()
