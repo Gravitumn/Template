@@ -132,7 +132,10 @@ int main()
                 }
             }
         }
-
+        if (BTempDEF)
+            botTempDEF = 5; //used with collosal titan - Art
+        if (PTempDEF)
+            playerTempDEF = 5; //used with collosal titan - Art
         //Current Hand//
         drawCard();
         for (int i = 0; i < 5; i++)
@@ -341,7 +344,7 @@ void loadText(Font &font)
     Pdef.setFillColor(Color::Black);
     Pdef.setFont(font);
     Pdef.setPosition(1000, 700);
-    def = "DEF : " + IntToString(playerDEF);
+    def = "DEF : " + IntToString(playerDEF+playerTempDEF);
     Pdef.setString(def);
 
     //player rune//
@@ -373,7 +376,7 @@ void loadText(Font &font)
     Bdef.setFillColor(Color::Black);
     Bdef.setFont(font);
     Bdef.setPosition(80, 150);
-    def = "DEF : " + IntToString(botDEF);
+    def = "DEF : " + IntToString(botDEF+botTempDEF);
     Bdef.setString(def);
 
     //bot rune//
@@ -709,8 +712,7 @@ void damageCalculate(int damage, bool Isplayer)
         if (PlayerCA)
             damage *= 2;
         totaldamage = damage + playerATK;
-        if (BTempDEF)
-            botTempDEF = 5; //used with collosal titan - Art
+        
         if (totaldamage < 0)
             totaldamage = 0;
         if (botTempDEF >= totaldamage) //used with collosal titan - Art
@@ -735,13 +737,13 @@ void damageCalculate(int damage, bool Isplayer)
                 botHP = botHP - totaldamage;
         }
     }
+
     else
     {
         if (BotCA)
             damage *= 2;
         totaldamage = damage + botAtk;
-        if (PTempDEF)
-            playerTempDEF = 5; //used with collosal titan - Art
+       
         if (totaldamage < 0)
             totaldamage = 0;
         if (PTempDEF > totaldamage)
@@ -945,6 +947,9 @@ void restart()
     BCAcount = 0;
     Pillucount = 0;
     Billucount = 0;
+    playerwin = false;
+    botwin =false;
+    withdraw = false;
 }
 
 void loadcrystal()
