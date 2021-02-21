@@ -5,8 +5,8 @@ using namespace sf;
 //global variable
 int playerHand[5] = {0, 0, 0, 0, 0};
 int BotHand[5] = {0, 0, 0, 0, 0};
-int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0; //player status
-int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0;                       // bot status
+int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0,PundyATK=0; //player status
+int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0,BundyATK=0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 2;
@@ -132,10 +132,19 @@ int main()
                 }
             }
         }
+
+        //colossal titan detect
         if (BTempDEF)
             botTempDEF = 5; //used with collosal titan - Art
         if (PTempDEF)
             playerTempDEF = 5; //used with collosal titan - Art
+
+        //undying detect
+        if (PlayerUndying)
+            PundyATK = 10;
+        if (BotUndying)
+            BundyATK = 10;
+
         //Current Hand//
         drawCard();
         for (int i = 0; i < 5; i++)
@@ -336,7 +345,7 @@ void loadText(Font &font)
     Patk.setFillColor(Color::Black);
     Patk.setFont(font);
     Patk.setPosition(1000, 650);
-    atk = "ATK : " + IntToString(playerATK);
+    atk = "ATK : " + IntToString(playerATK+PundyATK);
     Patk.setString(atk);
 
     //player def//
@@ -368,7 +377,7 @@ void loadText(Font &font)
     Batk.setFillColor(Color::Black);
     Batk.setFont(font);
     Batk.setPosition(80, 100);
-    atk = "ATK : " + IntToString(botAtk);
+    atk = "ATK : " + IntToString(botAtk+BundyATK);
     Batk.setString(atk);
 
     //bot def//
@@ -407,32 +416,8 @@ void Healing(int heal, bool Isplayer)
 
 void effectphase(bool PlayerStart)
 {
-    if (PlayerStart == true)
-    {
-        if (!PlayerStun)
-        {
-            cardUse(true);
-            wincondition();
-        }
-        if (!BotStun)
-        {
-            cardUse(false);
-            wincondition();
-        }
-    }
-    else
-    {
-        if (!BotStun)
-        {
-            cardUse(false);
-            wincondition();
-        }
-        if (!PlayerStun)
-        {
-            cardUse(true);
-            wincondition();
-        }
-    }
+    if(!PlayerStun)cardUse(true);
+    if(!BotStun)cardUse(false);
 }
 
 void cardUse(bool Isplayer)
@@ -667,6 +652,14 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 91 && card <= 92) //undying rage #21
     {
+        if(Isplayer){
+            PlayerUndying = true;
+            Pundycount = 3;
+        }
+        else{
+            BotUndying = true;
+            Bundycount = 3;
+        }
     }
     else if (card >= 93 && card <= 94) //berserker soul #22
     {
@@ -865,10 +858,14 @@ void turnCount()
     if (Billucount == 0)
         BotIllu = false;
 
-    if (Pundycount == 0)
+    if (Pundycount == 0){
         PlayerUndying = false;
-    if (Bundycount == 0)
+        PundyATK = 0;
+    }
+    if (Bundycount == 0){
         BotUndying = false;
+        BundyATK = 0;
+    }
 
     if (BCAcount == 0)
         BotCA = false;
@@ -950,6 +947,12 @@ void restart()
     playerwin = false;
     botwin =false;
     withdraw = false;
+    PTempDEF = false;
+    BTempDEF =false;
+    PTempDEFcount = 0;
+    BTempDEFcount = 0;
+    PundyATK = 0;
+    BundyATK = 0;
 }
 
 void loadcrystal()
