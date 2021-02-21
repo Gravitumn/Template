@@ -353,7 +353,7 @@ void loadText(Font &font)
     Pdef.setFillColor(Color::Black);
     Pdef.setFont(font);
     Pdef.setPosition(1000, 700);
-    def = "DEF : " + IntToString(playerDEF+playerTempDEF);
+    def = "DEF : " + IntToString(playerDEF + playerTempDEF);
     Pdef.setString(def);
 
     //player rune//
@@ -385,7 +385,7 @@ void loadText(Font &font)
     Bdef.setFillColor(Color::Black);
     Bdef.setFont(font);
     Bdef.setPosition(80, 150);
-    def = "DEF : " + IntToString(botDEF+botTempDEF);
+    def = "DEF : " + IntToString(botDEF + botTempDEF);
     Bdef.setString(def);
 
     //bot rune//
@@ -634,17 +634,21 @@ void cardUse(bool Isplayer)
             BTempDEFcount = 3;
         }
     }
-    else if (card >= 82 && card <= 87) //blood thirster #19*
+    else if (card >= 82 && card <= 87) //blood thirster #19
     {
         if (Isplayer)
         {
+            int firstbothp = botHP;
             damageCalculate(6, Isplayer);
-            Healing(6, Isplayer);
+            int dif = firstbothp - botHP;
+            Healing(dif, Isplayer);
         }
         else
         {
+            int playerfirsthp = playerHP;
             damageCalculate(6, !Isplayer);
-            Healing(6, !Isplayer);
+            int dif2 = playerfirsthp - playerHP;
+            Healing(dif2, !Isplayer);
         }
     }
     else if (card >= 88 && card <= 90) //trace on! #20
@@ -705,7 +709,7 @@ void damageCalculate(int damage, bool Isplayer)
         if (PlayerCA)
             damage *= 2;
         totaldamage = damage + playerATK;
-        
+
         if (totaldamage < 0)
             totaldamage = 0;
         if (botTempDEF >= totaldamage) //used with collosal titan - Art
@@ -736,7 +740,7 @@ void damageCalculate(int damage, bool Isplayer)
         if (BotCA)
             damage *= 2;
         totaldamage = damage + botAtk;
-       
+
         if (totaldamage < 0)
             totaldamage = 0;
         if (PTempDEF > totaldamage)
@@ -945,7 +949,7 @@ void restart()
     Pillucount = 0;
     Billucount = 0;
     playerwin = false;
-    botwin =false;
+    botwin = false;
     withdraw = false;
     PTempDEF = false;
     BTempDEF =false;
