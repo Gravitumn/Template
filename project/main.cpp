@@ -1011,4 +1011,4 @@ void loadcrystal()
         Bcrystal[5].loadFromFile("ui/none.png");
 }
 
-//sdsdsdsadasfdsfdsfs
+//sdsdsdsadasfdsfdsfsdf
