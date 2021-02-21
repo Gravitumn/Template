@@ -5,8 +5,8 @@ using namespace sf;
 //global variable
 int playerHand[5] = {0, 0, 0, 0, 0};
 int BotHand[5] = {0, 0, 0, 0, 0};
-int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0,PundyATK=0; //player status
-int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0,BundyATK=0;                       // bot status
+int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
+int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
 int keytime = 2;
@@ -345,7 +345,7 @@ void loadText(Font &font)
     Patk.setFillColor(Color::Black);
     Patk.setFont(font);
     Patk.setPosition(1000, 650);
-    atk = "ATK : " + IntToString(playerATK+PundyATK);
+    atk = "ATK : " + IntToString(playerATK + PundyATK);
     Patk.setString(atk);
 
     //player def//
@@ -377,7 +377,7 @@ void loadText(Font &font)
     Batk.setFillColor(Color::Black);
     Batk.setFont(font);
     Batk.setPosition(80, 100);
-    atk = "ATK : " + IntToString(botAtk+BundyATK);
+    atk = "ATK : " + IntToString(botAtk + BundyATK);
     Batk.setString(atk);
 
     //bot def//
@@ -416,8 +416,10 @@ void Healing(int heal, bool Isplayer)
 
 void effectphase(bool PlayerStart)
 {
-    if(!PlayerStun)cardUse(true);
-    if(!BotStun)cardUse(false);
+    if (!PlayerStun)
+        cardUse(true);
+    if (!BotStun)
+        cardUse(false);
 }
 
 void cardUse(bool Isplayer)
@@ -600,9 +602,36 @@ void cardUse(bool Isplayer)
     {
         if (Isplayer)
         {
+            if (PlayerStun == true)
+            {
+                PlayerStun = false;
+                Ppoisoncount = 0;
+                Pburncount = 0;
+                //play
+            }
+            else
+            {
+
+                PlayerStun = false;
+                Ppoisoncount = 0;
+                Pburncount = 0;
+            }
         }
         else
         {
+            if (BotStun == true)
+            {
+                BotStun = false;
+                Bpoisoncount = 0;
+                Bburncount = 0;
+                //play
+            }
+            else
+            {
+                BotStun = false;
+                Bpoisoncount = 0;
+                Bburncount = 0;
+            }
         }
     }
     else if (card >= 73 && card <= 75) //Colossal Assault #16
@@ -656,11 +685,13 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 91 && card <= 92) //undying rage #21
     {
-        if(Isplayer){
+        if (Isplayer)
+        {
             PlayerUndying = true;
             Pundycount = 3;
         }
-        else{
+        else
+        {
             BotUndying = true;
             Bundycount = 3;
         }
@@ -862,11 +893,13 @@ void turnCount()
     if (Billucount == 0)
         BotIllu = false;
 
-    if (Pundycount == 0){
+    if (Pundycount == 0)
+    {
         PlayerUndying = false;
         PundyATK = 0;
     }
-    if (Bundycount == 0){
+    if (Bundycount == 0)
+    {
         BotUndying = false;
         BundyATK = 0;
     }
@@ -952,7 +985,7 @@ void restart()
     botwin = false;
     withdraw = false;
     PTempDEF = false;
-    BTempDEF =false;
+    BTempDEF = false;
     PTempDEFcount = 0;
     BTempDEFcount = 0;
     PundyATK = 0;
