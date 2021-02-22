@@ -4,7 +4,7 @@ using namespace sf;
 
 //global variable
 int playerHand[5] = {0, 0, 0, 0, 0};
-int BotHand[5] = {0, 0, 0, 0, 0};
+int BotHand[5] = {0,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -38,8 +38,11 @@ void debuffUse();
 void turnCount();
 void wincondition();
 void restart();
+void gameEnd(Font &font);
 void loadcrystal();
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
     Font font;
@@ -220,10 +223,18 @@ int main()
             window.draw(Bcryst[i]);
         }
 
+        if(playerwin||botwin||withdraw)
+            gameEnd(font);
+
         window.display();
     }
     return 0;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 void drawCard()
 {
     for (int i = 0; i < 5; i++)
@@ -1004,45 +1015,25 @@ void restart()
         playerHand[i] = 0;
     for (int i = 0; i < 5; i++)
         BotHand[i] = 0;
-    playerHP = 80;
-    botHP = 80;
-    playerATK = 0;
-    botAtk = 0;
-    playerDEF = 0;
-    botDEF = 0;
-    playerRune = 0;
-    BotRune = 0;
-    BotLevel = 0;
-    PlayerLevel = 0;
-    PlayerStun = false;
-    BotStun = false;
-    PlayerPoison = false;
-    BotPoison = false;
-    PlayerBurn = false;
-    BotBurn = false;
-    PlayerIllu = false;
-    BotIllu = false;
-    PlayerUndying = false;
-    BotUndying = false;
-    PrawStun = false;
-    BrawStun = false;
-    Ppoisoncount = 0;
-    Bpoisoncount = 0;
-    Pburncount = 0;
-    Bburncount = 0;
-    PCAcount = 0;
-    BCAcount = 0;
-    Pillucount = 0;
-    Billucount = 0;
-    playerwin = false;
-    botwin = false;
-    withdraw = false;
-    PTempDEF = false;
-    BTempDEF = false;
-    PTempDEFcount = 0;
-    BTempDEFcount = 0;
-    PundyATK = 0;
-    BundyATK = 0;
+    playerHP = 80;botHP = 80;
+    playerATK = 0;botAtk = 0;
+    playerDEF = 0;botDEF = 0;
+    playerRune = 0;BotRune = 0;
+    BotLevel = 0;PlayerLevel = 0;
+    PlayerStun = false;BotStun = false;
+    PlayerPoison = false;BotPoison = false;
+    PlayerBurn = false;BotBurn = false;
+    PlayerIllu = false;BotIllu = false;
+    PlayerUndying = false;BotUndying = false;
+    PrawStun = false;BrawStun = false;
+    Ppoisoncount = 0;Bpoisoncount = 0;
+    Pburncount = 0;Bburncount = 0;
+    PCAcount = 0;BCAcount = 0;
+    Pillucount = 0;Billucount = 0;
+    playerwin = false;botwin = false;
+    withdraw = false;PTempDEF = false;BTempDEF = false;
+    PTempDEFcount = 0;BTempDEFcount = 0;
+    PundyATK = 0;BundyATK = 0;
 }
 
 void loadcrystal()
@@ -1109,4 +1100,24 @@ void loadcrystal()
         Bcrystal[5].loadFromFile("ui/none.png");
 }
 
-//sdsdsdsadasfdsfdsfsdf
+
+void gameEnd(Font &font){
+    Text ending;
+    ending.setFont(font);
+    ending.setPosition(500,400);
+    ending.setCharacterSize(40);
+    ending.setFillColor(Color::Black);
+    if(playerwin)
+        ending.setString("You win!");
+    else if(botwin)
+        ending.setString("You lost!");
+    else if(withdraw)
+        ending.setString("Draw!!!");
+
+    RectangleShape rect;
+    rect.setSize(Vector2f(300.f,150.f));
+    rect.setFillColor(Color::White);
+    rect.setPosition(440,350);
+    window.draw(rect);
+    window.draw(ending);
+}
