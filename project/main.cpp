@@ -453,9 +453,12 @@ void Healing(int heal, bool Isplayer)
 }
 
 void effectphase(bool PlayerStart)
-{
-    if(!PlayerStun)cardUse(true);
-    if(!BotStun)cardUse(false);
+{   
+    //explosive trap
+    if((!(playerHand[pselectcard] >= 76 && playerHand[pselectcard] <= 78) || PlayerStun) && (!(BotHand[bselectcard] >= 76 && BotHand[bselectcard] <= 78) || BotStun)){
+    if(!PlayerStun && !pfc)cardUse(true);
+    if(!BotStun && !bfc)cardUse(false);
+    }
     selected = false;
 }
 
@@ -694,8 +697,9 @@ void cardUse(bool Isplayer)
             BCAcount = 2;
         }
     }
-    else if (card >= 76 && card <= 78) //explosive trap #17
+    else if (card >= 76 && card <= 78) //explosive trap #17 
     {
+        //use in effect phase
     }
     else if (card >= 79 && card <= 81) //armor tiran #18  *WIP. If there is anything to add, please call me. - Art
     {
