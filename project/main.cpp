@@ -3,8 +3,8 @@
 using namespace sf;
 
 //global variable
-int playerHand[5] = {93,93,93,93,93};
-int BotHand[5] = {93,93,93,93,93};
+int playerHand[5] = {0,0,0,0,0};
+int BotHand[5] = {0,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -99,7 +99,7 @@ int main()
 
                 //////////show berserker card///////////////
                 if(pberserk == true || bberserk == true){  
-                        if(randCard==0)randCard= rand()%13+1;
+                        if(randCard==0)randCard= rand()%100+1;
                         berserkImage.loadFromFile(loadCard(randCard));
                         berserkSoul.setScale(0.5f,0.5f);
                         berserkSoul.setTexture(berserkImage);
