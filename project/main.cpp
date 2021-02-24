@@ -3,8 +3,8 @@
 using namespace sf;
 
 //global variable
-int playerHand[5] = {0, 0, 0, 0, 0};
-int BotHand[5] = {0,0,0,0,0};
+int playerHand[5] = {93,93,93,93,93};
+int BotHand[5] = {93,93,93,93,93};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -12,14 +12,15 @@ int BotMaxRune;
 int keytime = 2;
 int card;
 bool botwin = false, playerwin = false, withdraw = false;
-bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc;
-bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc;
+bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc,pberserk;
+bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc,bberserk;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount, PTempDEFcount;
 int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount, BTempDEFcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
-Texture CurrentPlayerHand[5], Pcrystal[6];
+Sprite berserkSoul;
+Texture CurrentPlayerHand[5], Pcrystal[6],berserkImage;
 Texture CurrentBotHand[5], Bcrystal[6];
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
@@ -41,7 +42,6 @@ void restart();
 void gameEnd(Font &font);
 void loadcrystal();
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
@@ -61,7 +61,7 @@ int main()
     //card Sprites
     Sprite playerCard[5];
     Sprite BotCard[5];
-    int winner = 0;
+    int randCard =0;
     srand(time(NULL));
     window.setFramerateLimit(60);
     for (int i = 0; i < 5; i++)
@@ -72,7 +72,7 @@ int main()
         Positionybcard[i] = 0;
     }
 
-    while (window.isOpen() && winner == 0)
+    while (window.isOpen())
     {
         PlayerMaxRune = 40 + (PlayerLevel * 20);
         BotMaxRune = 40 + (BotLevel * 20);
@@ -96,6 +96,15 @@ int main()
 
                 //turn end simulation
                 pcardselect(Positionxpcard, Positionypcard);
+
+                //////////show berserker card///////////////
+                if(pberserk == true || bberserk == true){  
+                        if(randCard==0)randCard= rand()%13+1;
+                        berserkImage.loadFromFile(loadCard(randCard));
+                        berserkSoul.setScale(0.5f,0.5f);
+                        berserkSoul.setTexture(berserkImage);
+                        berserkSoul.setPosition(450,300);
+                }
                 if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4 && selected == true)
                 {
                     keytime = 0;
@@ -127,16 +136,46 @@ int main()
                     else
                         End = true;
                 }
+
+                //////////////////berserker soul press A
+                else if(Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4){
+                    keytime=0;
+                    std::cout<<pberserk<<" "<<bberserk<<std::endl;
+                    if((randCard >= 1 && randCard <= 12) || (randCard >= 25 && randCard <= 48) || (randCard >= 82 && randCard <= 87) || (randCard >= 95 && randCard <= 96) || (randCard >= 99 && randCard <= 100))
+                    {
+                        if(pberserk==true){
+                            botHP-=15;
+                        }
+                        else if(bberserk==true){
+                            playerHP-=15;
+                        }
+                        randCard = 0;
+                    }
+                    else if(bberserk == true || pberserk == true){
+                        if(pberserk){
+                            pberserk = false;
+                            randCard = 0;
+                            //break;
+                        }
+                        else if(bberserk){
+                            bberserk = false;
+                            randCard = 0;
+                            //break;
+                        }
+                    }
+                }
             }
             else if (botwin == true || playerwin == true || withdraw == true)
             {
-                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 2)
+                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 4)
                 {
                     restart();
-                }
+                } 
             }
         }
-
+        
+        if(pberserk!=true && bberserk!= true)
+            wincondition();
         //colossal titan detect
         if (BTempDEF)
             botTempDEF = 5; //used with collosal titan - Art
@@ -223,6 +262,9 @@ int main()
             window.draw(Bcryst[i]);
         }
 
+        if(pberserk||bberserk){
+            window.draw(berserkSoul);
+        }
         if(playerwin||botwin||withdraw)
             gameEnd(font);
 
@@ -309,7 +351,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
         {
             if (Mouse::getPosition(window).x >= 180 * i && Mouse::getPosition(window).x <= 180 * (i + 1) && Mouse::getPosition(window).y >= 550.f)
             {
-                if (selected == false)
+                if (selected == false && (pberserk == false &&bberserk == false))
                 {
                     selected = true;
                     Positionxpcard[i] = 300;
@@ -325,7 +367,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                         }  
                     } 
                 }
-                else if (selected == true && botshow == false)
+                else if (selected == true && botshow == false && (pberserk == false &&bberserk == false))
                 {
                     if(card >= 64 && card <= 66)
                     bfc=0;
@@ -761,6 +803,8 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 93 && card <= 94) //berserker soul #22
     {
+        if(Isplayer) pberserk =true;
+        else bberserk = true;
     }
     else if (card >= 95 && card <= 96) //sigil of power #23*
     {
