@@ -112,7 +112,7 @@ int main()
                     if (botshow == true)
                     {
                         for (int i = 0; i < 5; i++)
-                        {
+                        {   
                             Positionxpcard[i] = 180 * i;
                             Positionypcard[i] = window.getSize().y - 250.f;
                             Positionxbcard[i] = window.getSize().x - 180 - (180 * i);
@@ -390,16 +390,18 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                 }
             }
         }
-        for(int i=0;i<4;i++)
-        {
-            if(Mouse::getPosition(window).x>250+(204*i) && Mouse::getPosition(window).x<250+(204*i+1) && Mouse::getPosition(window).y>250.f){
-                if(pdestiny == true){
+        if(pdestiny == true){
+            for(int i=0;i<4;i++)
+            {
+                if(Mouse::getPosition(window).x>250+(204*i) && Mouse::getPosition(window).x<250+(204*(i+1)) && Mouse::getPosition(window).y>250.f){
+                    
                     if(i==0)playerHand[pselectcard]=91;
                     else if(i==1)playerHand[pselectcard]=93;
                     else if(i==2)playerHand[pselectcard]=96;
                     else if(i==3)playerHand[pselectcard]=99;
                     pdestiny = false;
                     std::cout<<"Yes";
+                    
                 }
             }
         }
