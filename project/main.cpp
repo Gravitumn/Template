@@ -3,7 +3,7 @@
 using namespace sf;
 
 //global variable
-int playerHand[5] = {0,0,0,0,0};
+int playerHand[5] = {98,0,0,0,0};
 int BotHand[5] = {0,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
@@ -12,16 +12,16 @@ int BotMaxRune;
 int keytime = 2;
 int card;
 bool botwin = false, playerwin = false, withdraw = false;
-bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc,pberserk;
-bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc,bberserk;
+bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc,pberserk,pdestiny;
+bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc,bberserk,bdestiny;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount, PTempDEFcount;
 int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount, BTempDEFcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
-Sprite berserkSoul;
+Sprite berserkSoul,destiny;
 Texture CurrentPlayerHand[5], Pcrystal[6],berserkImage;
-Texture CurrentBotHand[5], Bcrystal[6];
+Texture CurrentBotHand[5], Bcrystal[6],destinyImage;
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
 void drawCard();
@@ -39,6 +39,7 @@ void debuffUse();
 void turnCount();
 void wincondition();
 void restart();
+void destinyselect(bool);
 void gameEnd(Font &font);
 void loadcrystal();
 
@@ -261,6 +262,8 @@ int main()
             window.draw(Pcryst[i]);
             window.draw(Bcryst[i]);
         }
+        if(pdestiny)
+            window.draw(destiny);
 
         if(pberserk||bberserk){
             window.draw(berserkSoul);
@@ -351,7 +354,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
         {
             if (Mouse::getPosition(window).x >= 180 * i && Mouse::getPosition(window).x <= 180 * (i + 1) && Mouse::getPosition(window).y >= 550.f)
             {
-                if (selected == false && (pberserk == false &&bberserk == false))
+                if (selected == false && (pberserk == false &&bberserk == false) && pdestiny==false)
                 {
                     selected = true;
                     Positionxpcard[i] = 300;
@@ -367,7 +370,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                         }  
                     } 
                 }
-                else if (selected == true && botshow == false && (pberserk == false &&bberserk == false))
+                else if (selected == true && botshow == false && (pberserk == false &&bberserk == false) && pdestiny==false)
                 {
                     if(card >= 64 && card <= 66)
                     bfc=0;
@@ -384,6 +387,19 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                             bfc=1;
                         }  
                     }                    
+                }
+            }
+        }
+        for(int i=0;i<4;i++)
+        {
+            if(Mouse::getPosition(window).x>250+(204*i) && Mouse::getPosition(window).x<250+(204*i+1) && Mouse::getPosition(window).y>250.f){
+                if(pdestiny == true){
+                    if(i==0)playerHand[pselectcard]=91;
+                    else if(i==1)playerHand[pselectcard]=93;
+                    else if(i==2)playerHand[pselectcard]=96;
+                    else if(i==3)playerHand[pselectcard]=99;
+                    pdestiny = false;
+                    std::cout<<"Yes";
                 }
             }
         }
@@ -821,6 +837,7 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 97 && card <= 98) //destiny draw #24
     {
+        destinyselect(Isplayer);
     }
     else if (card >= 99 && card <= 100) //chibaku tensei #25*
     {
@@ -1168,4 +1185,17 @@ void gameEnd(Font &font){
     rect.setPosition(440,350);
     window.draw(rect);
     window.draw(ending);
+}
+
+void destinyselect(bool isplayer){
+    if(isplayer){
+        destinyImage.loadFromFile("cardImage/destinyselect.png");
+        destiny.setTexture(destinyImage);
+        destiny.setScale(0.6f,0.6f);
+        destiny.setPosition(250,250);
+        pdestiny = true;
+    }
+    else{
+
+    }
 }
