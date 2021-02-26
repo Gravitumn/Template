@@ -114,7 +114,7 @@ int main()
                     if (botshow == true)
                     {
                         for (int i = 0; i < 5; i++)
-                        {
+                        {   
                             Positionxpcard[i] = 180 * i;
                             Positionypcard[i] = window.getSize().y - 250.f;
                             Positionxbcard[i] = window.getSize().x - 180 - (180 * i);
@@ -421,6 +421,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                     else if(i==3)playerHand[pselectcard]=99;
                     pdestiny = false;
                     std::cout<<"Yes";
+                    
                 }
             }
         }
