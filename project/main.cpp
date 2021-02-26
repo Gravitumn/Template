@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <bits/stdc++.h>
 using namespace sf;
-
+//98,98,98,98,98
+//0,0,0,0,0
 //global variable
-int playerHand[5] = {98,0,0,0,0};
-int BotHand[5] = {0,0,0,0,0};
+int playerHand[5] = {98,98,98,98,98};
+int BotHand[5] = {98,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -108,6 +109,7 @@ int main()
                 }
                 if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4 && selected == true)
                 {
+                    bdestiny = false;
                     keytime = 0;
                     if (botshow == true)
                     {
@@ -119,8 +121,9 @@ int main()
                             Positionybcard[i] = 0;
                             botshow = false;
                             effectphase(PlayerStart);
-                            playerHand[pselectcard] = 0;        
-                            BotHand[bselectcard] = 0;
+                            if(pdestiny!=true)
+                                playerHand[pselectcard] = 0;
+                            BotHand[bselectcard] = 0;       
                         }
                     }
                     else
@@ -139,7 +142,7 @@ int main()
                 }
 
                 //////////////////berserker soul press A
-                else if(Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4){
+                else if(Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4 && pdestiny!=true){
                     keytime=0;
                     std::cout<<pberserk<<" "<<bberserk<<std::endl;
                     if((randCard >= 1 && randCard <= 12) || (randCard >= 25 && randCard <= 48) || (randCard >= 82 && randCard <= 87) || (randCard >= 95 && randCard <= 96) || (randCard >= 99 && randCard <= 100))
@@ -174,6 +177,17 @@ int main()
                 } 
             }
         }
+
+
+        if(bdestiny == true)
+        {
+            BotHand[bselectcard] = rand()%10+91;
+            do{
+                BotHand[bselectcard] = rand()%10+91;
+            }while(BotHand[bselectcard] == 97 || BotHand[bselectcard] == 98);
+            std::cout<<BotHand[bselectcard]<<std::endl;
+            bdestiny = false;
+        }
         
         if(pberserk!=true && bberserk!= true)
             wincondition();
@@ -190,14 +204,21 @@ int main()
             BundyATK = 10;
 
         //Current Hand//
-        drawCard();
+        if(bdestiny!=true||pdestiny!=true)
+            drawCard();
         for (int i = 0; i < 5; i++)
         {
             CurrentPlayerHand[i].loadFromFile(loadCard(playerHand[i]));
             playerCard[i].setScale(0.5f, 0.5f);
             playerCard[i].setTexture(CurrentPlayerHand[i]);
             playerCard[i].setPosition(Positionxpcard[i], Positionypcard[i]);
+            if(pdestiny==true)
+            playerCard[pselectcard].setColor(Color::Transparent);
+            else
+            playerCard[pselectcard].setColor(Color::White);
         }
+        
+        
 
         for (int i = 0; i < 5; i++)
         {
@@ -207,7 +228,8 @@ int main()
             }
             else
             {
-                CurrentBotHand[i].loadFromFile("cardImage/back.png");
+                CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));
+                //CurrentBotHand[i].loadFromFile("cardImage/back.png");
             }
             BotCard[i].setScale(0.5f, 0.5f);
             BotCard[i].setTexture(CurrentBotHand[i]);
@@ -265,7 +287,7 @@ int main()
         if(pdestiny)
             window.draw(destiny);
 
-        if(pberserk||bberserk){
+        if((pberserk||bberserk) && pdestiny!=true){
             window.draw(berserkSoul);
         }
         if(playerwin||botwin||withdraw)
@@ -342,9 +364,8 @@ std::string loadCard(int card)
         return "cardImage/24.png";
     else if (card == 99 || card == 100)
         return "cardImage/25.png";
-    else
-        return (NULL);
 }
+
 void pcardselect(float Positionxpcard[], float Positionypcard[])
 {
     if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 4)
@@ -392,7 +413,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
         }
         for(int i=0;i<4;i++)
         {
-            if(Mouse::getPosition(window).x>250+(204*i) && Mouse::getPosition(window).x<250+(204*i+1) && Mouse::getPosition(window).y>250.f){
+            if(Mouse::getPosition(window).x>250+(204*i) && Mouse::getPosition(window).x<250+(204*(i+1)) && Mouse::getPosition(window).y>250.f){
                 if(pdestiny == true){
                     if(i==0)playerHand[pselectcard]=91;
                     else if(i==1)playerHand[pselectcard]=93;
@@ -1196,6 +1217,6 @@ void destinyselect(bool isplayer){
         pdestiny = true;
     }
     else{
-
+        bdestiny = true;
     }
 }
