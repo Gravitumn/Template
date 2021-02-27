@@ -4,8 +4,8 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {98,98,98,98,98};
-int BotHand[5] = {98,0,0,0,0};
+int playerHand[5] = {1,1,1,43,43};
+int BotHand[5] = {70,70,70,70,70};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -13,8 +13,8 @@ int BotMaxRune;
 int keytime = 2;
 int card;
 bool botwin = false, playerwin = false, withdraw = false;
-bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc,pberserk,pdestiny;
-bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc,bberserk,bdestiny;
+bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc,pberserk,pdestiny,pls=0;
+bool BotStun, BotPoison, BotBurn, BotIllu, BotCA, BotUndying, End, BrawStun, BTempDEF,bfc,bberserk,bdestiny,bls=0;
 int Ppoisoncount, Pburncount, Pillucount, Pundycount, PCAcount, PTempDEFcount;
 int Bpoisoncount, Bburncount, Billucount, Bundycount, BCAcount, BTempDEFcount;
 Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
@@ -122,23 +122,40 @@ int main()
                             botshow = false;
                             effectphase(PlayerStart);
                             if(pdestiny!=true)
-                                playerHand[pselectcard] = 0;
-                            BotHand[bselectcard] = 0;       
+                            playerHand[pselectcard] = 0;
+                            BotHand[bselectcard] = 0;
+                            End=true;       
                         }
                     }
                     else
                     {
+                        if(playerHand[pselectcard]>=70 && playerHand[pselectcard]<=72 && PlayerStun==1){
+                            Positionxpcard[pselectcard]=140;
+                            Positionypcard[pselectcard]=300;
+                            selected=0;
+                            pls=1;
+                        }
+                        else if(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72 && BotStun==1){
+                            std :: cout << "ok";
+                            Positionxbcard[bselectcard]=760;
+                            Positionybcard[bselectcard]=300;
+                            bls=1;
+                            bcardselect(Positionxbcard,Positionybcard);
+                            botshow = true;
+                        }
+                        else{
                         botshow = true;
+                        }
                     }
 
                     //endphase condition
                     if (End)
                         endphase();
 
-                    if (End == true)
+                 /*   if (End == true)
                         End = false;
-                    else
-                        End = true;
+                    else if (End == false)
+                        End = true;*/
                 }
 
                 //////////////////berserker soul press A
@@ -177,7 +194,6 @@ int main()
                 } 
             }
         }
-
 
         if(bdestiny == true)
         {
@@ -228,8 +244,8 @@ int main()
             }
             else
             {
-                CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));
-                //CurrentBotHand[i].loadFromFile("cardImage/back.png");
+                CurrentBotHand[i].loadFromFile("cardImage/back.png");
+               //CurrentBotHand[i].loadFromFile(loadCard(BotHand[i]));
             }
             BotCard[i].setScale(0.5f, 0.5f);
             BotCard[i].setTexture(CurrentBotHand[i]);
@@ -381,6 +397,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                     Positionxpcard[i] = 300;
                     Positionypcard[i] = 300;
                     pselectcard = i;
+                    if(pls==0)
                     bcardselect(Positionxbcard, Positionybcard);
                       card = playerHand[pselectcard];
                     if(card >= 64 && card <= 66){
@@ -407,7 +424,7 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                         {
                             bfc=1;
                         }  
-                    }                    
+                    }            
                 }
             }
         }
@@ -534,6 +551,19 @@ void Healing(int heal, bool Isplayer)
 
 void effectphase(bool PlayerStart)
 {   
+    //lamb
+    if(pls==1 || playerHand[pselectcard] >= 70 && playerHand[pselectcard] <= 72){
+        PlayerStun = false;
+        Ppoisoncount = 0;
+        Pburncount = 0;
+        pls=0;
+    }
+    if(bls==1 || BotHand[bselectcard] >= 70 && BotHand[bselectcard] <= 72){
+        BotStun = false;
+        Bpoisoncount = 0;
+        Bburncount = 0;
+        bls=0;
+    }
     //explosive trap
     if((!(playerHand[pselectcard] >= 76 && playerHand[pselectcard] <= 78) || PlayerStun) && (!(BotHand[bselectcard] >= 76 && BotHand[bselectcard] <= 78) || BotStun)){
     if(!PlayerStun && !pfc)cardUse(true);
@@ -730,39 +760,7 @@ void cardUse(bool Isplayer)
     }
     else if (card >= 70 && card <= 72) //lamb's respite #15    //not done
     {
-        if (Isplayer)
-        {
-            if (PlayerStun == true)
-            {
-                PlayerStun = false;
-                Ppoisoncount = 0;
-                Pburncount = 0;
-                //play
-            }
-            else
-            {
-
-                PlayerStun = false;
-                Ppoisoncount = 0;
-                Pburncount = 0;
-            }
-        }
-        else
-        {
-            if (BotStun == true)
-            {
-                BotStun = false;
-                Bpoisoncount = 0;
-                Bburncount = 0;
-                //play
-            }
-            else
-            {
-                BotStun = false;
-                Bpoisoncount = 0;
-                Bburncount = 0;
-            }
-        }
+        //nope
     }
     else if (card >= 73 && card <= 75) //Colossal Assault #16
     {
@@ -966,6 +964,7 @@ void endphase()
     debuffUse();
     wincondition();
     turnCount();
+    End=false;
 }
 
 void debuffUse()
