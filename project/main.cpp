@@ -4,8 +4,8 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {98,98,98,98,98};
-int BotHand[5] = {98,0,0,0,0};
+int playerHand[5] = {13,13,13,13,13};
+int BotHand[5] = {87,87,87,87,87};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -804,9 +804,9 @@ void cardUse(bool Isplayer)
         else
         {
             int playerfirsthp = playerHP;
-            damageCalculate(6, !Isplayer);
+            damageCalculate(6, Isplayer);
             int dif2 = playerfirsthp - playerHP;
-            Healing(dif2, !Isplayer);
+            Healing(dif2, Isplayer);
         }
     }
     else if (card >= 88 && card <= 90) //trace on! #20
@@ -851,7 +851,7 @@ void cardUse(bool Isplayer)
         }
         else
         {
-            damageCalculate(10, !Isplayer);
+            damageCalculate(10, Isplayer);
             BotRune += BotMaxRune;
         }
     }
@@ -868,7 +868,7 @@ void cardUse(bool Isplayer)
         }
         else
         {
-            damageCalculate(20, !Isplayer);
+            damageCalculate(20, Isplayer);
             PrawStun = true;
         }
     }
