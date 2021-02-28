@@ -4,8 +4,8 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {13,13,13,13,13};
-int BotHand[5] = {87,87,87,87,87};
+int playerHand[5] = {0,0,0,0,0};
+int BotHand[5] = {0,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -21,8 +21,8 @@ Text CurrentPlayerHP, CurrentBotHP, Pdef, Patk, Bdef, Batk, Prune, Brune;
 float Positionxpcard[5] = {}, Positionypcard[5] = {};
 float Positionxbcard[5] = {}, Positionybcard[5] = {};
 Sprite berserkSoul,destiny;
-Texture CurrentPlayerHand[5], Pcrystal[6],berserkImage;
-Texture CurrentBotHand[5], Bcrystal[6],destinyImage;
+Texture CurrentPlayerHand[5], Pcrystal[6],berserkImage,Prunecryst[5];
+Texture CurrentBotHand[5], Bcrystal[6],destinyImage,Brunecryst[5];
 RenderWindow window(VideoMode(1200, 800), "Project!");
 
 void drawCard();
@@ -43,6 +43,7 @@ void restart();
 void destinyselect(bool);
 void gameEnd(Font &font);
 void loadcrystal();
+void loadrune();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -59,6 +60,7 @@ int main()
     //crystal
     Sprite Pcryst[6];
     Sprite Bcryst[6];
+    Sprite Plevelcryst[5],Blevelcryst[5];
 
     //card Sprites
     Sprite playerCard[5];
@@ -270,6 +272,17 @@ int main()
 
         //Rune Check
         LevelUp();
+        //Rune show
+        loadrune();
+        for(int i=0;i<5;i++){
+            Plevelcryst[i].setTexture(Prunecryst[i]);
+            Plevelcryst[i].setScale(0.1f,0.1f);
+            Plevelcryst[i].setPosition(1150,(280+(50*i)));
+
+            Blevelcryst[i].setTexture(Brunecryst[i]);
+            Blevelcryst[i].setScale(0.1f,0.1f);
+            Blevelcryst[i].setPosition(0,(250+(50*i)));
+        }
 
         //draw background
         window.clear(Color::White);
@@ -300,6 +313,24 @@ int main()
             window.draw(Pcryst[i]);
             window.draw(Bcryst[i]);
         }
+
+        RectangleShape side,lefts;
+        side.setSize(Vector2f(50.f,250.f));
+        side.setFillColor(Color::White);
+        side.setPosition(1150,280);
+
+        lefts.setSize(Vector2f(50.f,250.f));
+        lefts.setFillColor(Color::White);
+        lefts.setPosition(0,250);
+        window.draw(side);
+        window.draw(lefts);
+        //show rune
+        for(int i=0;i<5;i++){
+            window.draw(Plevelcryst[i]);
+            window.draw(Blevelcryst[i]);
+        }
+
+
         if(pdestiny)
             window.draw(destiny);
 
@@ -1124,7 +1155,6 @@ void restart()
 
 void loadcrystal()
 {
-
     //stun
     if (PlayerStun)
         Pcrystal[0].loadFromFile("ui/stun.png");
@@ -1219,4 +1249,32 @@ void destinyselect(bool isplayer){
     else{
         bdestiny = true;
     }
+}
+
+void loadrune(){
+    for(int i=0;i<5;i++){
+        if(PlayerLevel<=5){
+            if(i<PlayerLevel)Prunecryst[i].loadFromFile("ui/bluerunestone.png");
+            else Prunecryst[i].loadFromFile("ui/greyrunestone.png");
+        }
+        else{
+            int lev = PlayerLevel%5;
+            if(i<lev)Prunecryst[i].loadFromFile("ui/bluerunestone.png");
+            else Prunecryst[i].loadFromFile("ui/redrunestone.png");
+        }
+    }
+
+    for(int i=0;i<5;i++){
+        if(BotLevel<=5){
+            if(i<BotLevel)Brunecryst[i].loadFromFile("ui/bluerunestone.png");
+            else Brunecryst[i].loadFromFile("ui/greyrunestone.png");
+        }
+        else{
+            int lev = BotLevel%5;
+            if(i<lev)Brunecryst[i].loadFromFile("ui/bluerunestone.png");
+            else Brunecryst[i].loadFromFile("ui/redrunestone.png");
+        }
+    }
+
+    
 }
