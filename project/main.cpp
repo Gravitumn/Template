@@ -4,13 +4,13 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {0,0,0,0,0};
-int BotHand[5] = {0,0,0,0,0};
+int playerHand[5] = {100,0,0,0,0};
+int BotHand[5] = {72,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
-int keytime = 2;
+int keytime;
 int card;
 bool botwin = false, playerwin = false, withdraw = false;
 bool PlayerStun, PlayerPoison, PlayerBurn, PlayerIllu, PlayerCA, selected = false, PlayerUndying, botshow = false, PrawStun, PTempDEF,pfc,pberserk,pdestiny,pls=0;
@@ -44,6 +44,7 @@ void destinyselect(bool);
 void gameEnd(Font &font);
 void loadcrystal();
 void loadrune();
+bool havecard(int , int);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
@@ -80,7 +81,7 @@ int main()
     {
         PlayerMaxRune = 40 + (PlayerLevel * 20);
         BotMaxRune = 40 + (BotLevel * 20);
-        if (keytime < 4)
+        if (keytime < 3)
             keytime++;
         //screen unwider
         Vector2u screen = Vector2u(1200, 800);
@@ -109,7 +110,7 @@ int main()
                         berserkSoul.setTexture(berserkImage);
                         berserkSoul.setPosition(450,300);
                 }
-                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4 && selected == true)
+                if (Keyboard::isKeyPressed(Keyboard::A) && keytime >= 3 && selected == true)
                 {
                     bdestiny = false;
                     keytime = 0;
@@ -161,7 +162,7 @@ int main()
                 }
 
                 //////////////////berserker soul press A
-                else if(Keyboard::isKeyPressed(Keyboard::A) && keytime >= 4 && pdestiny!=true){
+                else if(Keyboard::isKeyPressed(Keyboard::A) && keytime >= 3 && pdestiny!=true){
                     keytime=0;
                     std::cout<<pberserk<<" "<<bberserk<<std::endl;
                     if((randCard >= 1 && randCard <= 12) || (randCard >= 25 && randCard <= 48) || (randCard >= 82 && randCard <= 87) || (randCard >= 95 && randCard <= 96) || (randCard >= 99 && randCard <= 100))
@@ -190,7 +191,7 @@ int main()
             }
             else if (botwin == true || playerwin == true || withdraw == true)
             {
-                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 4)
+                if (Keyboard::isKeyPressed(Keyboard::R) && keytime >= 3)
                 {
                     restart();
                 } 
@@ -415,7 +416,7 @@ std::string loadCard(int card)
 
 void pcardselect(float Positionxpcard[], float Positionypcard[])
 {
-    if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 4)
+    if (Mouse::isButtonPressed(Mouse::Left) && keytime >= 3)
     {
         keytime = 0;
         for (int i = 0; i < 5; i++)
@@ -476,10 +477,35 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
     }
 }
 
+
+int indexcard(int start , int end){
+    for(int i=0;i<5;i++){
+        if(BotHand[i]>=start && BotHand[i]<=end)return i;
+    }
+}
+
+
 void bcardselect(float Positionxbcard[], float Positionybcard[])
 {
-    int i;
-    i = rand() % 5;
+    int i=-1;
+
+    if(BotStun && !(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72)){
+        if(havecard(70,72)){
+            i = indexcard(70,72);
+        }
+    }
+    if(PlayerCA == true && PlayerStun == false){
+        if(havecard(64,66)){
+            i = indexcard(64,66);
+        }
+        else if(havecard(76,78)){
+            i = indexcard(76,78);
+        }
+    }
+    if(i==-1)
+        i = rand() % 5;
+
+
     Positionxbcard[i] = 600;
     Positionybcard[i] = 300;
     bselectcard = i;
@@ -491,6 +517,13 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
                 pfc=1;
             }  
         } 
+}
+
+bool havecard(int start,int end){
+    for(int i=0;i<5;i++){
+        if(BotHand[i]>=start && BotHand[i]<=end)return true;
+    }
+    return false;
 }
 
 void loadText(Font &font)
