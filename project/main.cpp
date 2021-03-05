@@ -529,9 +529,18 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
 
     else if((botHP < playerHP)){                           /// Hp gab building (bloodthirster > illu > holy light)
         if(havecard(82,87)) i = indexcard(82,87);
-        else if(havecard(19,24) && BotIllu==false) i = indexcard(19,24);
+        else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
+        else if(havecard(79,81) && BTempDEFcount<=1) i = indexcard(79,81);     // added armor titan for as a priority between illu and holy light as an alternative hp reservation. - Art
         else if(havecard(13,18)) i = indexcard(13,18);
     }
+
+    else if ((BotPoison == true || BotBurn == true) && (PlayerBurn == false || PlayerBurn == true)){  //debuff cleanse. (incomplete) - Art
+        if (havecard(70,72)){
+            i = indexcard(70,72);
+        }
+    }
+
+    /* Also need for priority check. - Art */ 
 
     if(i==-1){
         try{
