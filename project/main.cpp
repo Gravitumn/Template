@@ -5,8 +5,8 @@ using namespace sf;
 //0,0,0,0,0
 //global variable
 int playerHand[5] = {100,0,0,0,0};
-int BotHand[5] = {72,0,0,0,0};
-int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
+int BotHand[5] = {62,0,0,0,0};
+int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 10, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
 int BotMaxRune;
@@ -477,6 +477,13 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
     }
 }
 
+bool criticalcondition(int i){
+    if(playerDEF < 6 && (BotHand[i]>=61 && BotHand[i]<=63)) return true;
+
+    else if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51) return true;
+
+    else if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36) return true;
+}
 
 int indexcard(int start , int end){
     for(int i=0;i<5;i++){
@@ -489,12 +496,13 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
 {
     int i=-1;
 
-    if(BotStun && !(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72)){
+    if(BotStun && !(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72)){         // Stun cleansing
         if(havecard(70,72)){
             i = indexcard(70,72);
         }
     }
-    if(PlayerCA == true && PlayerStun == false){
+
+    if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
         if(havecard(64,66)){
             i = indexcard(64,66);
         }
@@ -502,8 +510,42 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
             i = indexcard(76,78);
         }
     }
-    if(i==-1)
-        i = rand() % 5;
+
+    else if(havecard(93,94)) i = indexcard(93,94);          ///////////// Using Berserker soul no matter what!!!
+
+    else if(botHP > playerHP){
+        if(havecard(95,96)) i = indexcard(95,96);
+        if(havecard(49,51) && botHP > 25+playerATK) i = indexcard(49,51);
+        else if(havecard(52,57)) i = indexcard(52,57);
+    }
+
+    else if(botHP <= playerATK+20){                         ///////////// Less Hp condition for undying rage
+        if(havecard(91,92)) i =indexcard(91,92);
+        else if(havecard(64,66)) i = indexcard(64,66);
+        else if(havecard(76,78)) i = indexcard(76,78);
+    }
+    
+    else if(playerDEF>=6)if(havecard(61,63)) i = indexcard(61,63);          ////// demonic curse
+
+    else if((botHP < playerHP)){                           /// Hp gab building (bloodthirster > illu > holy light)
+        if(havecard(82,87)) i = indexcard(82,87);
+        else if(havecard(19,24) && BotIllu==false) i = indexcard(19,24);
+        else if(havecard(13,18)) i = indexcard(13,18);
+    }
+
+    if(i==-1){
+        try{
+            do{
+                i = rand() % 5;
+                if(i = std::numeric_limits<double>::infinity())
+                    throw std::domain_error("infinity");
+            }while(criticalcondition(i));
+        }
+        catch(std::exception& e){
+            i = rand()%5;
+            std::cout<<"caught error with endless loop"<<std::endl;
+        }
+    }
 
 
     Positionxbcard[i] = 600;
