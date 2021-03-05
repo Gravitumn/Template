@@ -503,12 +503,10 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     }
 
     if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
-        if(havecard(64,66)){
-            i = indexcard(64,66);
-        }
-        else if(havecard(76,78)){
-            i = indexcard(76,78);
-        }
+        if(havecard(64,66)) i = indexcard(64,66);
+        else if(havecard(76,78)) i = indexcard(76,78);
+        else if(havecard(43,48)) i = indexcard(43,48);      // for when the former cards aren't on the bot's hand - Art
+        else if(havecard(49,51)) i = indexcard(49,51);
     }
 
     else if(havecard(93,94)) i = indexcard(93,94);          ///////////// Using Berserker soul no matter what!!!
@@ -527,6 +525,11 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     
     else if(playerDEF>=6)if(havecard(61,63)) i = indexcard(61,63);          ////// demonic curse
 
+    else if(PlayerBurn == false || PlayerPoison == false){       //debuffing a player. - Art *optional. If this looks unneeded, please delete.
+        if (havecard(37,42)) i = indexcard(37,42);
+        else if (havecard(31,36)) i = indexcard(31,36);
+    }
+
     else if((botHP < playerHP)){                           /// Hp gab building (bloodthirster > illu > holy light)
         if(havecard(82,87)) i = indexcard(82,87);
         else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
@@ -534,7 +537,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         else if(havecard(13,18)) i = indexcard(13,18);
     }
 
-    else if ((BotPoison == true || BotBurn == true) && (PlayerBurn == false || PlayerBurn == true)){  //debuff cleanse. (incomplete) - Art
+    else if (BotPoison == true || BotBurn == true){  //debuff cleanse. (incomplete) - Art
         if (havecard(70,72)){
             i = indexcard(70,72);
         }
