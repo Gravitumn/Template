@@ -517,6 +517,12 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         else if(havecard(52,57)) i = indexcard(52,57);
     }
 
+    else if(botHP > playerHP){                              ////// rune power (incomplete)
+        if (havecard(58,60)) i = indexcard(58,60);
+        else if (havecard(61,63) && botHP >=30) i = indexcard(61,63);
+        else if (havecard(97,98)) i = indexcard(97,98);
+    }
+
     else if(botHP <= playerATK+20){                         ///////////// Less Hp condition for undying rage
         if(havecard(91,92)) i =indexcard(91,92);
         else if(havecard(64,66)) i = indexcard(64,66);
