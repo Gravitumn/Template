@@ -480,19 +480,22 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
 bool criticalcondition(int i){
     if(playerDEF < 6 && (BotHand[i]>=61 && BotHand[i]<=63)) return true;            //demonic curse
 
-    else if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51) return true;         //abyssal power
+    if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51) return true;         //abyssal power
 
-    else if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36) return true;    //smash
+    if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36) return true;    //smash
 
-    else if(playerATK<=1 && BotHand[i]>=7 && BotHand[i]<=12)return true;        //jankenpon
+    if(playerATK<=1 && BotHand[i]>=7 && BotHand[i]<=12)return true;        //jankenpon
     
-    else if(PlayerStun == true && BotHand[i]>=88 && BotHand[i]<=90) return true;        //trace on
+    if(PlayerStun == true && BotHand[i]>=88 && BotHand[i]<=90) return true;        //trace on
 
-    else if(botHP <= 15+playerATK && BotHand[i]>=97 && BotHand[i]<=98) return true;     //destiny draw
+    if(botHP <= 15+playerATK && BotHand[i]>=97 && BotHand[i]<=98) return true;     //destiny draw
 
-    else if(BotHand[i]>=73 && BotHand[i]<=75){
+    if(BotHand[i]>=73 && BotHand[i]<=75){
         if(!(havecard(1,6) || havecard(99,100) || havecard(31,36) || havecard(95,96) ||havecard(82,87) || havecard(43,48) || havecard(25,30) || havecard(37,42) || havecard(7,12)))
             return true;                // colossal assault when not have any dmg card.
+    }
+    if(BotStun == true && pselectcard >= 90 && pselectcard <= 100){
+        return true;                   // Ultimate card selected.
     }
 }
 
