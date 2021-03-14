@@ -514,7 +514,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         if(havecard(70,72)){
             i = indexcard(70,72);
         }
-        std::cout<<"bot in condition of cleansing"<<std::endl;
+        std::cout<<"Bot is in condition of cleansing."<<std::endl;
     }
 
     if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
@@ -523,7 +523,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         else if(havecard(43,48)) i = indexcard(43,48);      // for when the former cards aren't on the bot's hand - Art
         else if(havecard(49,51)) i = indexcard(49,51);
 
-        std::cout<<"bot countering colossal assault"<<std::endl;
+        std::cout<<"Bot counters colossal assault."<<std::endl;
     }
 
     else if(BotCA == true && BotStun == false){             //using colossal assualt
@@ -537,12 +537,12 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         else if(havecard(37,42)) i = indexcard(37,42);
         else if(havecard(7,12)) i = indexcard(7,12);
 
-        std::cout<<"bot try to use dmg card for colossal assualt"<<std::endl;
+        std::cout<<"Bot uses dmg card for colossal assualt."<<std::endl;
     }
 
     else if(havecard(93,94)){
         i = indexcard(93,94);
-        std::cout<<"bot try to use berserker soul"<<std::endl;
+        std::cout<<"Bot uses berserker soul."<<std::endl;
     }          ///////////// Using Berserker soul no matter what!!!
 
 
@@ -551,7 +551,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         if (havecard(70,72)){
             i = indexcard(70,72);
         }
-        std::cout<<"bot try to cleanse poison and burn"<<std::endl;
+        std::cout<<"Bot cleanses poison and burn."<<std::endl;
     }
     
     else if(playerDEF>=6){
@@ -559,7 +559,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     }
 
     else if((botHP < playerHP)){  
-        std::cout<<"bot know that hp less than player"<<std::endl;
+        std::cout<<"Bot knows that its hp less than player."<<std::endl;
         if(botHP <= playerATK+20){                         ///////////// Less Hp condition for undying rage
             if(havecard(91,92)) i =indexcard(91,92);
             else if(havecard(64,66)) i = indexcard(64,66);
@@ -584,7 +584,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
 
             }
 
-            std::cout<<"bot try to use undying rage"<<std::endl;
+            std::cout<<"Bot uses undying rage."<<std::endl;
         }
 
         else if(havecard(82,87)) i = indexcard(82,87);
@@ -607,7 +607,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     }
 
     else if(botHP > playerHP){
-        std::cout<<"bot know that hp more than player"<<std::endl; 
+        std::cout<<"Bot knows that its hp more than player."<<std::endl; 
         if(havecard(95,96)) i = indexcard(95,96);                                       //rune power
         else if(havecard(58,60) && botHP > 25+playerATK) i = indexcard(58,60);
         else if(havecard(52,57)) i = indexcard(52,57);
@@ -640,7 +640,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         }
         catch(std::exception& e){
             i = rand()%5;
-            std::cout<<"Bot use card randomly"<<std::endl;
+            std::cout<<"Bot uses card randomly."<<std::endl;
         }
     }
 
