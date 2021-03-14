@@ -554,7 +554,9 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         std::cout<<"bot try to cleanse poison and burn"<<std::endl;
     }
     
-    else if(playerDEF>=6)if(havecard(61,63)) i = indexcard(61,63);          ////// demonic curse
+    else if(playerDEF>=6){
+        if(havecard(61,63)) i = indexcard(61,63);          ////// demonic curse
+    }
 
     else if((botHP < playerHP)){  
         std::cout<<"bot know that hp less than player"<<std::endl;
