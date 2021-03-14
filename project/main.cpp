@@ -494,7 +494,7 @@ bool criticalcondition(int i){
         if(!(havecard(1,6) || havecard(99,100) || havecard(31,36) || havecard(95,96) ||havecard(82,87) || havecard(43,48) || havecard(25,30) || havecard(37,42) || havecard(7,12)))
             return true;                // colossal assault when not have any dmg card.
     }
-    if(BotStun == true && pselectcard >= 90 && pselectcard <= 100){
+    if(BotStun == true && BotHand[i] >= 90 && BotHand[i] <= 100){
         return true;                   // Ultimate card selected.
     }
 }
