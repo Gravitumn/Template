@@ -517,6 +517,33 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         std::cout<<"Bot is in condition of cleansing."<<std::endl;
     }
 
+    if(BotStun == true && !(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72)){
+        if(botHP < playerHP){
+            if(havecard(1,6)) i = indexcard(1,6);
+            else if(havecard(7,12)) i = indexcard(7,12);
+            else if(havecard(25,30)) i = indexcard(25,30);
+            else if(havecard(37,42)) i = indexcard(37,42);
+            else if(havecard(82,87)) i = indexcard(82,87);
+            else if(havecard(31,36)) i = indexcard(31,36);
+        }else{
+            if(botAtk<5){
+                if(havecard(1,6)) i = indexcard(1,6);
+                else if(havecard(7,12)) i = indexcard(7,12);
+                else if(havecard(25,30)) i = indexcard(25,30);
+                else if(havecard(37,42)) i = indexcard(37,42);
+                else if(havecard(82,87)) i = indexcard(82,87);
+                else if(havecard(31,36)) i = indexcard(31,36);
+            }else(
+                if(havecard(13,18)) i = indexcard(13,18);
+                else if(havecard(19,24)) i = indexcard(19,24);
+                else if(havecard(82,87)) i = indexcard(82,87);
+                else if(havecard(79,81)) i = indexcard(79,81);
+                else if(havecard(61,63)) i = indexcard(61,63);
+                else if(havecard(67,69)) i = indexcard(67,69);
+            )
+        }
+    }
+
     if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
         if(havecard(64,66)) i = indexcard(64,66);
         else if(havecard(76,78)) i = indexcard(76,78);
