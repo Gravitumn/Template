@@ -543,6 +543,38 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
             )
         }
     }
+    if(PTempDEF > 0){
+        if(botHP < playerHP){
+            if(havecard(13,18)) i = indexcard(13,18);
+            else if(havecard(19,24)) i = indexcard(19,24);
+            else if(havecard(43,48)) i = indexcard(43,48);
+            else if(havecard(37,42)) i = indexcard(37,42);
+            else if(havecard(25,30)) i = indexcard(25,30);
+            else if(havecard(7,12)) i = indexcard(7,12);
+            else if(havecard(1,6)) i = indexcard(1,6);
+            else if(havecard(82,87)) i = indexcard(82,87);
+            else if(havecard(31,36)) i = indexcard(31,36);
+            else if(havecard(95,96)) i = indexcard(95,96);
+            else if(havecard(99,100)) i = indexcard(99,100);
+        }else if(botHP > playerHP){
+            if(botHP < playerATK+20){
+                if(havecard(58,60)) i = indexcard(58,60);
+            }else{
+                if(havecard(95,96)) i = indexcard(95,96);
+                else if(havecard(52,57)) i = indexcard(52,57);
+                else if(havecard(13,18)) i = indexcard(13,18);
+                else if(havecard(19,24)) i = indexcard(19,24);
+                else if(havecard(43,48)) i = indexcard(43,48);
+                else if(havecard(37,42)) i = indexcard(37,42);
+                else if(havecard(25,30)) i = indexcard(25,30);
+                else if(havecard(7,12)) i = indexcard(7,12);
+                else if(havecard(1,6)) i = indexcard(1,6);
+                else if(havecard(82,87)) i = indexcard(82,87);
+                else if(havecard(31,36)) i = indexcard(31,36);
+                else if(havecard(99,100)) i = indexcard(99,100);
+            }
+        }
+    }
 
     if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
         if(havecard(64,66)) i = indexcard(64,66);
