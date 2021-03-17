@@ -478,25 +478,27 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
 }
 
 bool criticalcondition(int i){
+
     if(playerDEF < 6 && (BotHand[i]>=61 && BotHand[i]<=63)) return true;            //demonic curse
 
-    if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51) return true;         //abyssal power
+                      // Ultimate card selected.
 
-    if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36) return true;    //smash
+    else if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51) return true;         //abyssal power
 
-    if(playerATK<=1 && BotHand[i]>=7 && BotHand[i]<=12)return true;        //jankenpon
+    else if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36) return true;    //smash
+
+    else if(playerATK<=1 && BotHand[i]>=7 && BotHand[i]<=12)return true;        //jankenpon
     
-    if(PlayerStun == true && BotHand[i]>=88 && BotHand[i]<=90) return true;        //trace on
+    else if(PlayerStun == true && BotHand[i]>=88 && BotHand[i]<=90) return true;        //trace on
 
-    if(botHP <= 15+playerATK && BotHand[i]>=97 && BotHand[i]<=98) return true;     //destiny draw
+    else if(botHP <= 15+playerATK && BotHand[i]>=97 && BotHand[i]<=98) return true;     //destiny draw
 
-    if(BotHand[i]>=73 && BotHand[i]<=75){
-        if(!(havecard(1,6) || havecard(99,100) || havecard(31,36) || havecard(95,96) ||havecard(82,87) || havecard(43,48) || havecard(25,30) || havecard(37,42) || havecard(7,12)))
+    else if(BotHand[i]>=73 && BotHand[i]<=75){
+        if((havecard(1,6) || havecard(99,100) || havecard(31,36) || havecard(95,96) ||havecard(82,87) || havecard(43,48) || havecard(25,30) || havecard(37,42) || havecard(7,12))== false)
             return true;                // colossal assault when not have any dmg card.
     }
-    if(BotStun == true && BotHand[i] >= 91 && BotHand[i] <= 100){
-        return true;                   // Ultimate card selected.
-    }
+    else if(BotStun == true && BotHand[i] >= 91 && BotHand[i] <= 92)return true; 
+    
 }
 
 int indexcard(int start , int end){
@@ -517,7 +519,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         std::cout<<"bot in condition of cleansing"<<std::endl;
     }
 
-    else if(BotStun == true && havecard(70,72)==false){
+    if(BotStun == true && havecard(70,72)==false){
         if(botHP < playerHP){
             if(havecard(1,6)) i = indexcard(1,6);
             else if(havecard(7,12)) i = indexcard(7,12);
@@ -549,7 +551,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     }
     
 
-    else if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
+    if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
         if(havecard(64,66)) i = indexcard(64,66);
         else if(havecard(76,78)) i = indexcard(76,78);
         else if(havecard(43,48)) i = indexcard(43,48);      // for when the former cards aren't on the bot's hand - Art
@@ -576,7 +578,6 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         i = indexcard(93,94);
         std::cout<<"bot try to use berserker soul"<<std::endl;
     }          ///////////// Using Berserker soul no matter what!!!
-
 
     else if(PTempDEFcount > 0){
         if(botHP < playerHP){
@@ -637,33 +638,33 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
                 else if(havecard(49,51)) i = indexcard(49,51);
 
                 else if(playerATK>=5){
-                if(havecard(67,69)) i = indexcard(67,69);
-                else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
-                else if(havecard(76,78)) i = indexcard(76,78);
-                else if(havecard(64,66)) i = indexcard(64,66);
+                    if(havecard(67,69)) i = indexcard(67,69);
+                    else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
+                    else if(havecard(76,78)) i = indexcard(76,78);
+                    else if(havecard(64,66)) i = indexcard(64,66);
                 }
 
             }
 
             std::cout<<"bot try to use undying rage"<<std::endl;
+            }
+        else{
+            if(havecard(82,87)) i = indexcard(82,87);
+            else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
+            else if(havecard(79,81) && BTempDEFcount<=1) i = indexcard(79,81);     // added armor titan for as a priority between illu and holy light as an alternative hp reservation. - Art
+            else if(havecard(13,18)) i = indexcard(13,18);
+
+            else if(havecard(99,100)) i = indexcard(99,100);
+            else if(havecard(43,48)) i = indexcard(43,48);
+            else if(havecard(49,51)) i = indexcard(49,51);
+
+            else if(playerATK>=5){
+                if(havecard(67,69)) i = indexcard(67,69);
+                else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
+                else if(havecard(76,78)) i = indexcard(76,78);
+                else if(havecard(64,66)) i = indexcard(64,66);
+            }
         }
-
-        else if(havecard(82,87)) i = indexcard(82,87);
-        else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
-        else if(havecard(79,81) && BTempDEFcount<=1) i = indexcard(79,81);     // added armor titan for as a priority between illu and holy light as an alternative hp reservation. - Art
-        else if(havecard(13,18)) i = indexcard(13,18);
-
-        else if(havecard(99,100)) i = indexcard(99,100);
-        else if(havecard(43,48)) i = indexcard(43,48);
-        else if(havecard(49,51)) i = indexcard(49,51);
-
-        else if(playerATK>=5){
-            if(havecard(67,69)) i = indexcard(67,69);
-            else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
-            else if(havecard(76,78)) i = indexcard(76,78);
-            else if(havecard(64,66)) i = indexcard(64,66);
-        }
-
         
     }
 
