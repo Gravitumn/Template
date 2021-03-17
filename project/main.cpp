@@ -510,7 +510,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
 {
     int i=-1;
 
-    if(BotStun && !(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72)){         // Stun cleansing
+    if(BotStun==true && havecard(70,72)==true){         // Stun cleansing
         if(havecard(70,72)){
             i = indexcard(70,72);
         }
@@ -578,7 +578,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     }          ///////////// Using Berserker soul no matter what!!!
 
 
-    else if(PTempDEF > 0){
+    else if(PTempDEFcount > 0){
         if(botHP < playerHP){
             if(havecard(13,18)) i = indexcard(13,18);
             else if(havecard(19,24)) i = indexcard(19,24);
@@ -688,7 +688,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
          
     }
 
-
+    
     if(i==-1){
         try{
             while(criticalcondition(i)){
@@ -702,6 +702,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
             std::cout<<"Bot use card randomly"<<std::endl;
         }
     }
+    std::cout<<i<<std::endl;
 
 
     Positionxbcard[i] = 600;
