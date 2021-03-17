@@ -4,8 +4,8 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {0,0,0,0,0};
-int BotHand[5] = {0,0,0,0,0};
+int playerHand[5] = {79,100,0,0,0};
+int BotHand[5] = {71,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -142,6 +142,7 @@ int main()
                             std :: cout << "ok";
                             Positionxbcard[bselectcard]=760;
                             Positionybcard[bselectcard]=300;
+                            BotStun = false;
                             bls=1;
                             bcardselect(Positionxbcard,Positionybcard);
                             botshow = true;
@@ -469,7 +470,6 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
                     else if(i==2)playerHand[pselectcard]=96;
                     else if(i==3)playerHand[pselectcard]=99;
                     pdestiny = false;
-                    std::cout<<"Yes";
                     
                 }
             }
@@ -478,22 +478,49 @@ void pcardselect(float Positionxpcard[], float Positionypcard[])
 }
 
 bool criticalcondition(int i){
-    if(playerDEF < 6 && (BotHand[i]>=61 && BotHand[i]<=63)) return true;            //demonic curse
 
-    else if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51) return true;         //abyssal power
+    if(playerDEF < 6 && (BotHand[i]>=61 && BotHand[i]<=63)){
+        return true;            //demonic curse
+        std::cout<<"crit:Bot not use demonic curse"<<std::endl;
+    } 
 
-    else if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36) return true;    //smash
+    else if(BotStun == true && BotHand[i] >= 91 && BotHand[i] <= 100){
+        return true;
+        std::cout<<"crit:Bot not use ultimate"<<std::endl;  
+    }                 // Ultimate card selected.
 
-    else if(playerATK<=1 && BotHand[i]>=7 && BotHand[i]<=12)return true;        //jankenpon
-    
-    else if(PlayerStun == true && BotHand[i]>=88 && BotHand[i]<=90) return true;        //trace on
+    else if(botHP <= 25+playerATK && BotHand[i]>=49 && BotHand[i]<=51){
+         return true;
+         std::cout<<"crit:Bot not use abyssal power"<<std::endl;         //abyssal power
+    }
 
-    else if(botHP <= 15+playerATK && BotHand[i]>=97 && BotHand[i]<=98) return true;     //destiny draw
+    else if(botHP <= 5+playerATK && playerHP+playerDEF > botAtk+25 && BotHand[i]>=31 && BotHand[i]<=36){
+         return true; 
+         std::cout<<"crit:Bot not use smash"<<std::endl;   //smash
+    }
+
+    else if(playerATK<=1 && BotHand[i]>=7 && BotHand[i]<=12){
+        return true;
+        std::cout<<"crit:Bot not use jankenpon"<<std::endl;        //jankenpon
+    }
+
+    else if(PlayerStun == true && BotHand[i]>=88 && BotHand[i]<=90){
+        return true;
+        std::cout<<"crit:Bot not use trace on"<<std::endl;
+    } //trace on
+
+    else if(botHP <= 15+playerATK && BotHand[i]>=97 && BotHand[i]<=98){
+         return true;     //destiny draw
+         std::cout<<"crit:Bot not use destiny draw"<<std::endl;
+    }
 
     else if(BotHand[i]>=73 && BotHand[i]<=75){
-        if(!(havecard(1,6) || havecard(99,100) || havecard(31,36) || havecard(95,96) ||havecard(82,87) || havecard(43,48) || havecard(25,30) || havecard(37,42) || havecard(7,12)))
-            return true;                // colossal assault when not have any dmg card.
+        if((havecard(1,6) || havecard(99,100) || havecard(31,36) || havecard(95,96) ||havecard(82,87) || havecard(43,48) || havecard(25,30) || havecard(37,42) || havecard(7,12))== false)return true;                
+        // colossal assault when not have any dmg card.
+        std::cout<<"crit:Bot not use colossal assault"<<std::endl;
     }
+    
+    
 }
 
 int indexcard(int start , int end){
@@ -507,14 +534,46 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
 {
     int i=-1;
 
-    if(BotStun && !(BotHand[bselectcard]>=70 && BotHand[bselectcard]<=72)){         // Stun cleansing
+    if(BotStun==true && havecard(70,72)==true){         // Stun cleansing
         if(havecard(70,72)){
             i = indexcard(70,72);
         }
         std::cout<<"bot in condition of cleansing"<<std::endl;
     }
 
-    if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
+    else if(BotStun == true && havecard(70,72)==false){
+        if(botHP < playerHP){
+            if(havecard(1,6)) i = indexcard(1,6);
+            else if(havecard(7,12)) i = indexcard(7,12);
+            else if(havecard(25,30)) i = indexcard(25,30);
+            else if(havecard(37,42)) i = indexcard(37,42);
+            else if(havecard(82,87)) i = indexcard(82,87);
+            else if(havecard(31,36)) i = indexcard(31,36);
+        }
+        else{
+            if(botAtk<5){
+                if(havecard(1,6)) i = indexcard(1,6);
+                else if(havecard(7,12)) i = indexcard(7,12);
+                else if(havecard(25,30)) i = indexcard(25,30);
+                else if(havecard(37,42)) i = indexcard(37,42);
+                else if(havecard(82,87)) i = indexcard(82,87);
+                else if(havecard(31,36)) i = indexcard(31,36);
+            }
+            else{
+                if(havecard(13,18)) i = indexcard(13,18);
+                else if(havecard(19,24)) i = indexcard(19,24);
+                else if(havecard(82,87)) i = indexcard(82,87);
+                else if(havecard(79,81)) i = indexcard(79,81);
+                else if(havecard(61,63)) i = indexcard(61,63);
+                else if(havecard(67,69)) i = indexcard(67,69);
+            }
+        }
+
+        std::cout<<"bot try to use the most useless card"<<std::endl;
+    }
+    
+
+    else if(PlayerCA == true && PlayerStun == false){            /// countering Colossal assault
         if(havecard(64,66)) i = indexcard(64,66);
         else if(havecard(76,78)) i = indexcard(76,78);
         else if(havecard(43,48)) i = indexcard(43,48);      // for when the former cards aren't on the bot's hand - Art
@@ -542,27 +601,54 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
         std::cout<<"bot try to use berserker soul"<<std::endl;
     }          ///////////// Using Berserker soul no matter what!!!
 
-
-
-    else if (BotPoison == true && BotBurn == true && botHP <= 40+playerATK){  //debuff cleanse. - Art
-        if (havecard(70,72)){
-            i = indexcard(70,72);
+    else if(PTempDEFcount > 0){
+        if(botHP < playerHP){
+            if(havecard(13,18)) i = indexcard(13,18);
+            else if(havecard(19,24)) i = indexcard(19,24);
+            else if(havecard(43,48)) i = indexcard(43,48);
+            else if(havecard(37,42)) i = indexcard(37,42);
+            else if(havecard(25,30)) i = indexcard(25,30);
+            else if(havecard(7,12)) i = indexcard(7,12);
+            else if(havecard(1,6)) i = indexcard(1,6);
+            else if(havecard(82,87)) i = indexcard(82,87);
+            else if(havecard(31,36)) i = indexcard(31,36);
+            else if(havecard(95,96)) i = indexcard(95,96);
+            else if(havecard(99,100)) i = indexcard(99,100);
         }
-        std::cout<<"bot try to cleanse poison and burn"<<std::endl;
+        else if(botHP > playerHP){
+            if(botHP < playerATK+20){
+                if(havecard(58,60)) i = indexcard(58,60);
+            }
+            else{
+                if(havecard(95,96)) i = indexcard(95,96);
+                else if(havecard(52,57)) i = indexcard(52,57);
+                else if(havecard(13,18)) i = indexcard(13,18);
+                else if(havecard(19,24)) i = indexcard(19,24);
+                else if(havecard(43,48)) i = indexcard(43,48);
+                else if(havecard(37,42)) i = indexcard(37,42);
+                else if(havecard(25,30)) i = indexcard(25,30);
+                else if(havecard(7,12)) i = indexcard(7,12);
+                else if(havecard(1,6)) i = indexcard(1,6);
+                else if(havecard(82,87)) i = indexcard(82,87);
+                else if(havecard(31,36)) i = indexcard(31,36);
+                else if(havecard(99,100)) i = indexcard(99,100);
+            }
+        }
+
+        std::cout<<"Bot try to wait until Armor titan fall!"<<std::endl;
     }
     
-    else if(playerDEF>=6)
-    {
-        if(havecard(61,63)) i = indexcard(61,63);
-    }         ////// demonic curse
+    else if(playerDEF>=6){
+        std::cout<<"demonic yeah"<<std::endl;
+        if(havecard(61,63)) i = indexcard(61,63);          ////// demonic curse
+    }
 
     else if((botHP < playerHP)){  
-        std::cout<<"bot know that hp less than player"<<std::endl;
+        
         if(botHP <= playerATK+20){                         ///////////// Less Hp condition for undying rage
             if(havecard(91,92)) i =indexcard(91,92);
             else if(havecard(64,66)) i = indexcard(64,66);
             else if(havecard(76,78)) i = indexcard(76,78);
-
             else{
                 if(havecard(82,87)) i = indexcard(82,87);
                 else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
@@ -574,34 +660,34 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
                 else if(havecard(49,51)) i = indexcard(49,51);
 
                 else if(playerATK>=5){
-                if(havecard(67,69)) i = indexcard(67,69);
-                else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
-                else if(havecard(76,78)) i = indexcard(76,78);
-                else if(havecard(64,66)) i = indexcard(64,66);
+                    if(havecard(67,69)) i = indexcard(67,69);
+                    else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
+                    else if(havecard(76,78)) i = indexcard(76,78);
+                    else if(havecard(64,66)) i = indexcard(64,66);
                 }
 
             }
 
             std::cout<<"bot try to use undying rage"<<std::endl;
+            }
+        else{
+            if(havecard(82,87)) i = indexcard(82,87);
+            else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
+            else if(havecard(79,81) && BTempDEFcount<=1) i = indexcard(79,81);     // added armor titan for as a priority between illu and holy light as an alternative hp reservation. - Art
+            else if(havecard(13,18)) i = indexcard(13,18);
+
+            else if(havecard(99,100)) i = indexcard(99,100);
+            else if(havecard(43,48)) i = indexcard(43,48);
+            else if(havecard(49,51)) i = indexcard(49,51);
+
+            else if(playerATK>=5){
+                if(havecard(67,69)) i = indexcard(67,69);
+                else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
+                else if(havecard(76,78)) i = indexcard(76,78);
+                else if(havecard(64,66)) i = indexcard(64,66);
+            }
         }
-
-        else if(havecard(82,87)) i = indexcard(82,87);
-        else if(havecard(19,24) && Billucount<=1) i = indexcard(19,24);    //changed to BotIlluCount <= 1 - more in commit desc.
-        else if(havecard(79,81) && BTempDEFcount<=1) i = indexcard(79,81);     // added armor titan for as a priority between illu and holy light as an alternative hp reservation. - Art
-        else if(havecard(13,18)) i = indexcard(13,18);
-
-        else if(havecard(99,100)) i = indexcard(99,100);
-        else if(havecard(43,48)) i = indexcard(43,48);
-        else if(havecard(49,51)) i = indexcard(49,51);
-
-        else if(playerATK>=5){
-            if(havecard(67,69)) i = indexcard(67,69);
-            else if(havecard(79,81) && BTempDEFcount <=1) i = indexcard(79,81);
-            else if(havecard(76,78)) i = indexcard(76,78);
-            else if(havecard(64,66)) i = indexcard(64,66);
-        }
-
-        
+        std::cout<<"bot know that hp less than player"<<std::endl;
     }
 
     else if(botHP > playerHP){
@@ -626,9 +712,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
     }
 
     
- 
-
-    if(i==-1){
+    if(i<0){
         try{
             while(criticalcondition(i)){
                 i = rand() % 5;
@@ -641,7 +725,7 @@ void bcardselect(float Positionxbcard[], float Positionybcard[])
             std::cout<<"Bot use card randomly"<<std::endl;
         }
     }
-
+    std::cout<<i<<std::endl;
 
     Positionxbcard[i] = 600;
     Positionybcard[i] = 300;
