@@ -4,8 +4,8 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {79,100,0,0,0};
-int BotHand[5] = {71,0,0,0,0};
+int playerHand[5] = {0,0,0,0,0};
+int BotHand[5] = {0,0,0,0,0};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -200,11 +200,15 @@ int main()
         }
 
         if(bdestiny == true)
-        {
-            BotHand[bselectcard] = rand()%10+91;
-            do{
-                BotHand[bselectcard] = rand()%10+91;
-            }while(BotHand[bselectcard] == 97 || BotHand[bselectcard] == 98);
+        {   
+            if(botHP<playerATK+20)
+            BotHand[bselectcard] = 91;
+            else if(botHP>45 && playerHP>45)
+            BotHand[bselectcard] = 95;
+            else if(botHP>playerHP)
+            BotHand[bselectcard] = 99;
+            else if(botHP<=playerHP)
+            BotHand[bselectcard] = 93;
             std::cout<<BotHand[bselectcard]<<std::endl;
             bdestiny = false;
         }
