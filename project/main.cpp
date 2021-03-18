@@ -4,8 +4,8 @@ using namespace sf;
 //98,98,98,98,98
 //0,0,0,0,0
 //global variable
-int playerHand[5] = {79,100,0,0,0};
-int BotHand[5] = {71,0,0,0,0};
+int playerHand[5] = {65,65,65,65,65};
+int BotHand[5] = {100,100,100,100,100};
 int playerHP = 80, pselectcard, playerATK = 0, playerDEF = 0, playerTempDEF = 0, PlayerLevel = 0, playerRune = 0, PundyATK = 0; //player status
 int botHP = 80, bselectcard, botDEF = 0, botTempDEF = 0, botAtk = 0, BotRune, BotLevel = 0, BundyATK = 0;                       // bot status
 int PlayerMaxRune;
@@ -83,6 +83,11 @@ int main()
         BotMaxRune = 40 + (BotLevel * 20);
         if (keytime < 3)
             keytime++;
+
+        if(playerDEF <=0)
+            playerDEF=0;
+        if(botDEF <=0)
+            botDEF = 0;
         //screen unwider
         Vector2u screen = Vector2u(1200, 800);
         if (window.getSize().x > 1200 || window.getSize().x < 1200)
@@ -96,6 +101,31 @@ int main()
         {
             if (event.type == Event::Closed)
                 window.close();
+
+            if(Keyboard::isKeyPressed(Keyboard::D) && keytime >= 3){
+                keytime = 0 ;
+                playerRune+=PlayerMaxRune;
+                std::cout<<"Playerlevel : "<<PlayerLevel<<std::endl;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::F) && keytime >=3){
+                keytime = 0;
+                playerDEF-=1;
+                playerATK-=1;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::G) && keytime >=3){
+                keytime = 0;
+                playerDEF+=1;
+                playerATK+=1;
+            }
+            if(Keyboard::isKeyPressed(Keyboard::S) && keytime >=3){
+                keytime = 0;
+                PlayerStun = true;
+                /*PlayerUndying = true;
+                PlayerBurn = true;
+                PlayerPoison = true;
+                PlayerIllu = true;
+                PlayerCA = true;*/
+            }
             if (botwin == false && playerwin == false && withdraw == false)
             {
 
@@ -924,7 +954,8 @@ void cardUse(bool Isplayer)
     else if (card >= 31 && card <= 36) //smash!!! #6
     {
         damageCalculate(15, Isplayer);
-        damageCalculate(5, !Isplayer);
+        if(Isplayer)playerHP-=5;
+        else botHP-=5;
     }
     else if (card >= 37 && card <= 42) //trickster #7
     {
@@ -1511,10 +1542,13 @@ void loadrune(){
             if(i<PlayerLevel)Prunecryst[i].loadFromFile("ui/bluerunestone.png");
             else Prunecryst[i].loadFromFile("ui/greyrunestone.png");
         }
-        else{
+        else if(PlayerLevel<10){
             int lev = PlayerLevel%5;
-            if(i<lev)Prunecryst[i].loadFromFile("ui/bluerunestone.png");
+            if(i>lev-1)Prunecryst[i].loadFromFile("ui/bluerunestone.png");
             else Prunecryst[i].loadFromFile("ui/redrunestone.png");
+        }
+        else{
+            Prunecryst[i].loadFromFile("ui/redrunestone.png");
         }
     }
 
@@ -1523,10 +1557,13 @@ void loadrune(){
             if(i<BotLevel)Brunecryst[i].loadFromFile("ui/bluerunestone.png");
             else Brunecryst[i].loadFromFile("ui/greyrunestone.png");
         }
-        else{
+        else if(BotLevel<10){
             int lev = BotLevel%5;
-            if(i<lev)Brunecryst[i].loadFromFile("ui/bluerunestone.png");
+            if(i>lev-1)Brunecryst[i].loadFromFile("ui/bluerunestone.png");
             else Brunecryst[i].loadFromFile("ui/redrunestone.png");
+        }
+        else{
+            Brunecryst->loadFromFile("ui/redrunestone.png");
         }
     }
 
