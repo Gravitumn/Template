@@ -230,11 +230,15 @@ int main()
         }
 
         if(bdestiny == true)
-        {
-            BotHand[bselectcard] = rand()%10+91;
-            do{
-                BotHand[bselectcard] = rand()%10+91;
-            }while(BotHand[bselectcard] == 97 || BotHand[bselectcard] == 98);
+        {   
+            if(botHP<playerATK+20)
+            BotHand[bselectcard] = 91;
+            else if(botHP>45 && playerHP>45)
+            BotHand[bselectcard] = 95;
+            else if(botHP>playerHP)
+            BotHand[bselectcard] = 99;
+            else if(botHP<=playerHP)
+            BotHand[bselectcard] = 93;
             std::cout<<BotHand[bselectcard]<<std::endl;
             bdestiny = false;
         }
